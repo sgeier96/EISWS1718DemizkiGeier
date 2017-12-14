@@ -36,7 +36,7 @@ app.get('/*', function(request, response){
 
 app.post('/', function(request, response){
   console.log(request.body);  //our JSON
-  response.send(request.availableResources[0].name); //echoing the result back
+  response.send(JSON.stringify(request.availableResources[0].name)); //echoing the result back
 });
 
 
