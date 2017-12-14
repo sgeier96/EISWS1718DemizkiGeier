@@ -53,3 +53,9 @@ function compareTheActivitiesPeriods(users){
     }
   }
 }*/
+
+//Die Bindung an den Port sollte als letztes im Code stehen
+//Start server
+app.listen(settings.port, function(){
+  console.log("Dienstgeber ist nun auf Port " + settings.port + " verfuegbar.");
+});
