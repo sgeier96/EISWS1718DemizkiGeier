@@ -1,0 +1,24 @@
+{
+  "name": "eisws1718demizkigeier",
+  "version": "1.0.0",
+  "description": "p",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgeier96/EISWS1718DemizkiGeier.git"
+  },
+  "author": "Stefan Geier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sgeier96/EISWS1718DemizkiGeier/issues"
+  },
+  "homepage": "https://github.com/sgeier96/EISWS1718DemizkiGeier#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "request": "^2.83.0"
+  }
+}
