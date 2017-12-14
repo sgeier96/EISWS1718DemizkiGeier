@@ -4,7 +4,7 @@
   "description": "p",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node MS3/Implementation/Dienstgeber/dienstgeber.js"
   },
   "repository": {
