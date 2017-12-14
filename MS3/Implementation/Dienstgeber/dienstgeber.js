@@ -30,8 +30,13 @@ const settings = {
   startHouseholdManager(household);
 });*/
 
+app.get('/', function(request, response){
+  response.send("There you have your GET-Answer");
+});
+
 app.post('/', function(request, response){
-  response.send("Answer aquired!")
+  console.log(request.body);  //our JSON
+  response.send(request.body); //echoing the result back
 });
 
 
