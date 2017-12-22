@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-15"?>
+<Response>
+    <StopTimetable>
+        <StopEvents>
+            <StopEvent ID="46849" Type="Stop">
+                <ArrivalTime BoardingActivity="true">2013-12-16T17:59:00+01:00</ArrivalTime>
+                <DepartureTime BoardingActivity="true">2013-12-16T17:59:00+01:00</DepartureTime>
+                <VehicleJourney>
+                    <ID>234949</ID>
+                    <Line ID="90" Type="Line"></Line>
+                    <Direction>Thielenbruch</Direction>
+                    <DirectionNo>1</DirectionNo>
+                    <Vehicle><Name></Name></Vehicle>
+                    <Product>LightRail</Product>
+                </VehicleJourney>
+            </StopEvent>
+        </StopEvents>
+        <Objects>
+            <City ID="225">
+                <GKZ>5315000</GKZ>
+                <Name>Köln</Name>
+                <Name Type="Abbr">K</Name>
+                <BoundingRectangle srsName="urn:adv:crs:ETRS89_UTM32">345792,5634119
+                    369288,5659209</BoundingRectangle>
+            </City>
+            <District ID="4123">
+                <Name>Innenstadt</Name>
+                <BoundingRectangle srsName="urn:adv:crs:ETRS89_UTM32">354418,5642604
+                    357428,5647209</BoundingRectangle>
+                <Group ID="225" Type="City">
+                </Group>
+            </District>
+            <Stop ID="20">
+                <ASSID>23</ASSID>
+                <Name>Barbarossaplatz</Name>
+                <Name Type="Abbr">BAB</Name>
+                <Coordinate srsName="urn:adv:crs:ETRS89_UTM32">355427,5643901</Coordinate>
+                <Class>Stop</Class>
+                <Group ID="225" Type="City"></Group>
+                <Group ID="4123" Type="District"></Group>
+            </Stop>
+            <Line ID="90">
+                <Number>18</Number>
+                <Product>LightRail</Product>
+            </Line>
+        </Objects>
+        <ResponseStatus>
+            <Code>0</Code>
+            <Text>OK</Text>
+        </ResponseStatus>
+    </StopTimetable>
+    <SystemStatus>
+        <Status>
+            <Code>0</Code>
+            <Text>OK</Text>
+        </Status>
+        <Timestamp>2013-12-18T12:41:28+01:00</Timestamp>
+        <Host>ASS_Test</Host>
+    </SystemStatus>
+</Response>
