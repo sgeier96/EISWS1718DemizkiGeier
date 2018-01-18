@@ -38,7 +38,7 @@ app.post('/', function(request, response){
   console.log(request.body);  //our JSON
 
   //startHouseholdManager();
-  response.send(JSON.stringify(request.body.availableResources[0].name));
+  response.send(JSON.stringify(request.body));
                                  //echoing the name of the first resource back
 });
 
