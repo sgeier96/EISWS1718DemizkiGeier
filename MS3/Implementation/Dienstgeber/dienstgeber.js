@@ -2,6 +2,8 @@ var fs = require('fs');                   //I/O-Funktionen
 var express = require("express");         //app.get, etc.
 var request = require("request");         //request(url, function(err, res, body))), etc.
 var bodyParser = require("body-parser");  //parser for i.e. JSON
+const writeJsonFile = require('write-json-file'); //Stringify and write JSON to a file atomically
+const loadJsonFile = require('load-json-file'); //Read and parse a JSON file. Same author as ⬆
 
 var app = express();
 var households = [];
@@ -37,12 +39,68 @@ app.get('/*', function(request, response){
 app.post('/', function(request, response){
   console.log(request.body);  //our JSON
 
-  //startHouseholdManager();
+  var data = request.body;
+  processRequestParameter(data);
+  //processRegistration(data);
+
   response.send(JSON.stringify(request.body));
-                                 //echoing the name of the first resource back
 });
 
 
+
+function processRequestParameter(data){
+  switch(data.parameter){
+    case 'registration':
+      processRegistration(data.user);
+      break;
+    case 'login':
+      processLogin(data.user);
+      break;
+      //...
+    default:
+      console.log("unknown parameter");
+  }
+}
+
+function processRegistration(userData){
+  console.log("Whole passedJsonAsObject: " + JSON.stringify(userData));
+  console.log("android_id:" + JSON.stringify(userData.android_id));
+  console.log("username: " + JSON.stringify(userData.username));
+
+  var loadedJson = '';
+  loadJsonFile('userdatabase.json').then(json => {
+    loadedJson = json;
+  });
+
+  for (var key in loadedJson){
+    if(loadedJson[key] != userData.android_id){ //if old json doesnt content newly passed User
+      console.log("[processRegistration] New user found! Updating userdatabase...");
+      writeJsonFile.sync('userdatabase.json', userData);
+      console.log("[processRegistration] Done updating userdatabase!");
+    } else {
+      console.log("[processRegistration] User with android_id '" +
+                  userData.android_id + "' already registered! Aborting...");
+      //EITHER HTTP-STATUSCODE 412 (Precondition Failed) or 422 (Unprocessable Entity)
+      break;
+    }
+  } //end of json-loop
+}//end of processRegistration function
+
+function processLogin(userData){
+  var loadedJson = '';
+  loadedJsonFile('userdatabase.json').then(json => {
+    loadedJson = json;
+  });
+
+  for(var key in loadedJson){
+    if(loadedJson[key] == userData.android_id){
+      console.log("[processLogin] User found! Logging in...");
+    } else {
+      console.log("[processLogin] User with android_id '" +
+                  userData.android_id + "' not found! Registration necessary!");
+    }
+  }//end of json-loop
+}//end of processLogin function
 
 /*
 function startHouseholdManager(household){
