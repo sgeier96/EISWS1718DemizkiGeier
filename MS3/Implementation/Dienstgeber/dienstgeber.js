@@ -5,6 +5,8 @@ var bodyParser = require("body-parser");  //parser for i.e. JSON
 const writeJsonFile = require('write-json-file'); //Stringify and write JSON to a file atomically
 const loadJsonFile = require('load-json-file'); //Read and parse a JSON file. Same author as ⬆
 
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;//For sync/async Requests
+
 var app = express();
 var households = [];
 var userdatabasePath = 'userdatabase.json';
@@ -26,7 +28,7 @@ const settings = {
 
 //-----------------------------------------TEST API Anbindung----------------------------------//
 apiConnectTest();
-
+/*
 function apiConnectTest (){
   request({
       url: "https://apitest.vrsinfo.de:4443/vrs/cgi/service/ass"
@@ -36,6 +38,45 @@ function apiConnectTest (){
       }
     }
 )}
+*/
+
+function apiConnectTest (){
+  var xhr = new XMLHttpRequest(); //creates an XMLHttpRequest object
+
+  var xmlPOST =
+  '<?xml version="1.0" encoding="UTF-8"?>'                  +
+  ' <Request>'                                              +
+  '   <ObjectInfo>'                                         +
+  '     <ObjectSearch>'                                     +
+  '       <String>rathaus köln</String>'                    +
+  '       <Classes>'                                        +
+  '         <Stop/>'                                        +
+  '         <Address/>'                                     +
+  '         <POI/>'                                         +
+  '         </Classes>'                                     +
+  '         </ObjectSearch>'                                +
+  '       <Options>'                                        +
+  '         <Output>'                                       +
+  '         <SRSName>urn:adv:crs:ETRS89_UTM32</SRSName>'    +
+  '         </Output>'                                      +
+  '       </Options>'                                       +
+  '   </ObjectInfo>'                                        +
+  '</Request>';
+
+  xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+          console.log(xhr.responseText); // Display response in console
+      }
+      else {
+        console.log("failed request");
+      }
+  }
+
+  xhr.open("POST","https://apitest.vrsinfo.de:4443/vrs/cgi/service/objects",false); //Specifies the type(method,url,async) of request
+  xhr.setRequestHeader("POST", "https://apitest.vrsinfo.de:4443/vrs/cgi/service/objects"); //Set Request Header
+  xhr.send(xmlPOST);        //Sends a request string to the server
+
+}
 //---------------------------------------------------------------------------------------------//
 
 
