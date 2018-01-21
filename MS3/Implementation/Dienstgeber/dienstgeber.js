@@ -7,6 +7,9 @@ const loadJsonFile = require('load-json-file'); //Read and parse a JSON file. Sa
 
 var app = express();
 var households = [];
+var userdatabasePath = 'userdatabase.json';
+var result;
+
 
 //POST-Zeug von https://codeforgeek.com/2014/09/handle-get-post-request-express-4
 //Here we are configuring express to use body-parser as middle-ware.
@@ -20,17 +23,6 @@ const settings = {
   //HEROKUAPP https://eisws1718demizkigeier.herokuapp.com
   //etc.
 }
-//----------------------------------------------------------------------------//
-//----------------------------------PSEUDO-CODE!!!!!!!!!!!!!!!!---------------//
-//----------Abgebrochen. Datenstruktur der JSON notwendig---------------------//
-//----------------------------------------------------------------------------//
-
-//Vermutlich besser, die Übernahme der Daten wie Household, User, etc. über HTTP-POST zu machen
-/*app.post("/*", function(request, response){
-  var household = "";
-
-  startHouseholdManager(household);
-});*/
 
 //-----------------------------------------TEST API Anbindung----------------------------------//
 apiConnectTest();
@@ -52,13 +44,11 @@ app.get('/*', function(request, response){
 });
 
 app.post('/', function(request, response){
-  console.log(request.body);  //our JSON
-
+  console.log("[POST-Acceptor] Received data: " + JSON.stringify(request.body));
   var data = request.body;
   processRequestParameter(data);
-  //processRegistration(data);
 
-  response.send(JSON.stringify(request.body));
+  response.send(result);
 });
 
 
@@ -69,7 +59,7 @@ function processRequestParameter(data){
       processRegistration(data.user);
       break;
     case 'login':
-      processLogin(data.user);
+      processLogin(data);
       break;
       //...
     default:
@@ -78,43 +68,69 @@ function processRequestParameter(data){
 }
 
 function processRegistration(userData){
-  console.log("Whole passedJsonAsObject: " + JSON.stringify(userData));
-  console.log("android_id:" + JSON.stringify(userData.android_id));
-  console.log("username: " + JSON.stringify(userData.username));
+  console.log("[processRegistration] Whole passedJsonAsObject: " + JSON.stringify(userData));
+  console.log("[processRegistration] android_id:" + JSON.stringify(userData.android_id));
+  console.log("[processRegistration] username: " + JSON.stringify(userData.username));
 
+  var unknownUser = true;
   var loadedJson = '';
-  loadJsonFile('userdatabase.json').then(json => {
-    loadedJson = json;
-  });
 
-  for (var key in loadedJson){
-    if(loadedJson[key] != userData.android_id){ //if old json doesnt content newly passed User
-      console.log("[processRegistration] New user found! Updating userdatabase...");
-      writeJsonFile.sync('userdatabase.json', userData);
-      console.log("[processRegistration] Done updating userdatabase!");
-    } else {
-      console.log("[processRegistration] User with android_id '" +
-                  userData.android_id + "' already registered! Aborting...");
-      //EITHER HTTP-STATUSCODE 412 (Precondition Failed) or 422 (Unprocessable Entity)
-      break;
+  console.log("[processingRegistration] Attempting to load userdatabase...");
+  var loadedData = fs.readFileSync(userdatabasePath);
+  try {
+    var loadedJson = JSON.parse(loadedData);
+    console.log("[processingRegistration] Userdatabase loaded");
+  } catch (e) {
+    var loadedJson = [];
+    console.log("[processingRegistration] Userdatabase loaded");
+  }
+  var loadedJsonLength = Object.keys(loadedJson).length;
+  for (var i = 0; i < loadedJsonLength; i++) {
+    if (loadedJson[i].android_id == userData.android_id) {
+      console.log("[processingRegistration] Already registered User! Aborting...");
+      unknownUser = false;
+      continue;
     }
-  } //end of json-loop
+  }
+  if (unknownUser) {
+    console.log("[processingRegistration] Android_id not found, thus new User! Registrating...");
+    loadedJson.push(userData);
+    console.log("[processingRegistration] User added to database");
+    fs.writeFileSync(userdatabasePath, JSON.stringify(loadedJson));
+    console.log("[processingRegistration] Userdatabase saved. Registration complete.");
+  }
 }//end of processRegistration function
 
-function processLogin(userData){
-  var loadedJson = '';
-  loadedJsonFile('userdatabase.json').then(json => {
-    loadedJson = json;
-  });
 
-  for(var key in loadedJson){
-    if(loadedJson[key] == userData.android_id){
-      console.log("[processLogin] User found! Logging in...");
-    } else {
-      console.log("[processLogin] User with android_id '" +
-                  userData.android_id + "' not found! Registration necessary!");
+
+function processLogin(userData){
+
+  var knownUser = false;
+  var loadedJson = '';
+
+  console.log("[processingRegistration] Attempting to load userdatabase...");
+  var loadedData = fs.readFileSync(userdatabasePath);
+  try {
+    var loadedJson = JSON.parse(loadedData);
+    console.log("[processingRegistration] Userdatabase loaded");
+  } catch (e) {
+    var loadedJson = [];
+    console.log("[processingRegistration] Userdatabase loaded");
+  }
+  var loadedJsonLength = Object.keys(loadedJson).length;
+  for (var i = 0; i < loadedJsonLength; i++) {
+    if (loadedJson[i].android_id == userData.android_id) {
+      console.log("[processingRegistration] User registered. Logging in...");
+      knownUser = true;
+      continue;
     }
-  }//end of json-loop
+  }
+  if(!knownUser){
+    console.log("[processingRegistration] User not registered! Registration required!");
+    result = knownUser;
+  } else {
+    result = knownUser;
+  }
 }//end of processLogin function
 
 /*
