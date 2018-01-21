@@ -32,6 +32,21 @@ const settings = {
   startHouseholdManager(household);
 });*/
 
+//-----------------------------------------TEST API Anbindung----------------------------------//
+apiConnectTest();
+
+function apiConnectTest (){
+  request({
+      url: "https://apitest.vrsinfo.de:4443/vrs/cgi/service/ass"
+    }, function (error, response, body){
+      if (!error && response.statusCode === 200){
+        console.log("success");
+      }
+    }
+)}
+//---------------------------------------------------------------------------------------------//
+
+
 app.get('/*', function(request, response){
   response.send("There you have your GET-Answer");
 });
