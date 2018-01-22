@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<Response>
+    <ObjectInfo>
+        <Objects>
+            <Object>
+                <ID>8</ID>
+                <Type>Stop</Type>
+                <Value>Breslauer Platz/Hbf, Köln-Innenstadt</Value>
+                <Descr/>
+                <Coords>356595.000,5645623.000</Coords>
+                <BBox/>
+                <Stop>
+                    <ASSNr>9</ASSNr>
+                </Stop>
+            </Object>
+            <Object>
+                <ID>1179046</ID>
+                <Type>Address</Type>
+                <Value>Breslauer Platz 2, 50668 Köln (Altstadt-Nord)</Value>
+                <Descr/>
+                <Coords>356705.000,5645563.000</Coords>
+                <BBox/>
+            </Object>
+            <Object>
+                <ID>1179049</ID>
+                <Type>Address</Type>
+                <Value>Breslauer Platz 4, 50668 Köln (Altstadt-Nord)</Value>
+                <Descr/>
+                <Coords>356646.000,5645605.000</Coords>
+                <BBox/>
+            </Object>
+        </Objects>
+        <ResponseStatus/>
+    </ObjectInfo>
+    <SystemStatus>
+        <Status>
+            <Code>0</Code>
+            <Text>OK</Text>
+        </Status>
+        <Timestamp>2012-02-22T14:34:13+01:00</Timestamp>
+        <Host>ASS_test</Host>
+    </SystemStatus>
+</Response>
