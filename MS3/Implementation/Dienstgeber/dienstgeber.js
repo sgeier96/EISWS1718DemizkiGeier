@@ -3,6 +3,8 @@ var express = require("express");         //app.get, etc.
 var request = require("request");         //request(url, function(err, res, body))), etc.
 var bodyParser = require("body-parser");  //parser for i.e. JSON
 
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;//For sync/async Requests
+
 var app = express();
 var households = [];
 var userdatabasePath = 'userdatabase.json';
