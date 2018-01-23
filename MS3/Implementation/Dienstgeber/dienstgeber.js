@@ -2,8 +2,6 @@ var fs = require('fs');                   //I/O-Funktionen
 var express = require("express");         //app.get, etc.
 var request = require("request");         //request(url, function(err, res, body))), etc.
 var bodyParser = require("body-parser");  //parser for i.e. JSON
-const writeJsonFile = require('write-json-file'); //Stringify and write JSON to a file atomically
-const loadJsonFile = require('load-json-file'); //Read and parse a JSON file. Same author as ⬆
 
 var app = express();
 var households = [];
@@ -24,7 +22,7 @@ const settings = {
   //etc.
 }
 
-app.get('/*', function(request, response){
+app.get('/', function(request, response){
   response.send("There you have your GET-Answer");
 });
 
