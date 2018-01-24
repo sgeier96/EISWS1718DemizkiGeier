@@ -19,10 +19,13 @@
   "homepage": "https://github.com/sgeier96/EISWS1718DemizkiGeier#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "dom-parser": "^0.1.5",
     "express": "^4.16.2",
     "load-json-file": "^4.0.0",
     "request": "^2.83.0",
     "simple-registry": "^0.2.2",
-    "write-json-file": "^2.3.0"
+    "write-json-file": "^2.3.0",
+    "xmlhttprequest": "^1.8.0",
+    "xmllint": "^0.1.1"
   }
 }
