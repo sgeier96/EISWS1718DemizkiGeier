@@ -2,14 +2,19 @@ var fs = require('fs');                   //I/O-Funktionen
 var express = require("express");         //app.get, etc.
 var request = require("request");         //request(url, function(err, res, body))), etc.
 var bodyParser = require("body-parser");  //parser for i.e. JSON
+const writeJsonFile = require('write-json-file'); //Stringify and write JSON to a file atomically
+const loadJsonFile = require('load-json-file'); //Read and parse a JSON file. Same author as ⬆
 
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;//For sync/async Requests
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;                  //For sync/async Requests
+var xmllint = require('xmllint')                                                //validator function
+var inspect = require('util').inspect;
+var xhr = new XMLHttpRequest();                                                 //creates an XMLHttpRequest object
+var convert = require('xml-js');                                                //https://www.npmjs.com/package/xml-js
 
 var app = express();
 var households = [];
 var userdatabasePath = 'userdatabase.json';
 var result;
-
 
 //POST-Zeug von https://codeforgeek.com/2014/09/handle-get-post-request-express-4
 //Here we are configuring express to use body-parser as middle-ware.
@@ -24,7 +29,7 @@ const settings = {
   //etc.
 }
 
-app.get('/', function(request, response){
+app.get('/*', function(request, response){
   response.send("There you have your GET-Answer");
 });
 
@@ -32,12 +37,151 @@ app.post('/', function(request, response){
   console.log("[POST-Acceptor] Received data: " + JSON.stringify(request.body));
   var data = request.body;
   processRequestParameter(data);
+  vrsCommunication();
 
   response.send(result);
 });
 
+journey();
+//---------------------------Abfahrt und Ankunft Anfrage----------------------//
+function journey(){
+  var rJson = fs.readFileSync('./clientJson.json'); //dummy Json(Information from client)
+  try {
+    var oJson = JSON.parse(rJson);
+    var arrivalTime = oJson.Ankunftszeit;
+    var departureTime = oJson.Abfahrtszeit;
+    var placeofArrival = oJson.Ankunftsort;
+    var pointofDeparture = oJson.Abfahrtsort;
+    }
+  catch (e) {
+    console.log("json parsing failed");
+  }
+    var xmlPOST =
+    '<?xml version="1.0" encoding="ISO-8859-15"?>'                                        +
+    ' <Request>'                                                                          +
+    '   <Journey>'                                                                        +
+    '     <Origin ID="'+ pointofDeparture +'" Type="Stop"/>'                              +
+    '     <Destination ID="'+ placeofArrival +'" Type="Stop"/>'                           +
+    '     <SearchTime SearchDirection="Departure">'+ arrivalTime +'</SearchTime>'         +
+    '     <Mode>'                                                                         +
+    '       <PublicTransport>'                                                            +
+    '         <SearchInterval>'                                                           +
+    '           <NumOfRoutes>5</NumOfRoutes>'                                             +
+    '         </SearchInterval>'                                                          +
+    '         <Product>LongDistanceTrains</Product>'                                      +
+    '         <Product>RegionalTrains</Product>'                                          +
+    '         <Product>SuburbanTrains</Product>'                                          +
+    '         <Product>Underground</Product>'                                             +
+    '         <Product>Bus</Product>'                                                     +
+    '         <Product>CommunityBus</Product>'                                            +
+    '         <Product>OnDemandServices</Product>'                                        +
+    '         <Product>LightRail</Product>'                                               +
+    '         <SupplementalPayment>false</SupplementalPayment>'                           +
+    '         <DisabledAccessRequired/>'                                                  +
+    '         <RadiusExtensionOrigin>450</RadiusExtensionOrigin>'                         +
+    '         <RadiusExtensionDestination>450</RadiusExtensionDestination>'               +
+    '        </PublicTransport>'                                                          +
+    '      </Mode>'                                                                       +
+    '      <Options>'                                                                     +
+    '         <Output>'                                                                   +
+    '           <SRSName>urn:adv:crs:ETRS89_UTM32</SRSName>'                              +
+    '           <NoShape>false</NoShape>'                                                 +
+    '         </Output>'                                                                  +
+    '      </Options>'                                                                    +
+    '   </Journey>'                                                                       +
+    '</Request>'
+    //validate(xmlPOST);
 
+    vrsCommunication(xmlPOST);
+}//end of journey
+//--------------------------Search object key or values-----------------------//
+//http://techslides.com/how-to-parse-and-search-json-in-javascript
+//return an array of objects according to key, value, or key and value matching
+function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));
+        } else
+        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
+        if (i == key && val == '' && key == "house_id"){
+          var houseID = obj[i];
+          return houseID;
+          break;
+        }
+        if (i == key && val == '' && key == "deadline"){
+          var deadlines = obj[i];
+          return deadlines;
+          break;
+        }
+        if (i == key && val == '' && key == "activities"){
+          var activities = obj[i];
+          return activities;
+          break;
+        }
+        if (i == key && val == '' && key == "activityDuration"){
+          var wholeDuration = obj[i];
+          return wholeDuration;
+          break;
+        }
+        if (i == key && obj[i] == val || i == key && val == '') { //
+            objects.push(obj);
+        } else if (obj[i] == val && key == ''){
+            //only add if the object is not already in the array
+            if (objects.lastIndexOf(obj) == -1){
+                objects.push(obj);
+            }
+        }
+    }
+    return objects;
+}//end of getObjects()
+//------------------------------TEST API Anbindung----------------------------//
+function vrsCommunication(xmlPOST){
 
+  xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        try {
+          var cJson = convert.xml2json(xhr.responseText, {compact: true, spaces: 4});
+          var parsedJson = JSON.parse(cJson);
+
+          var searchObj = getObjects(parsedJson,"_text","2018-01-29T15:15:00+01:00"); //search speciefied time in response
+          if (searchObj.length != 0){                                                 //test of different time
+            console.log("No changes in departure time");
+           }
+           else {
+             console.log("Attention! New time to go");
+           }
+         //console.log(inspect(getObjects(tJson,"_text",'2018-01-29T15:21:00+01:00'), { colors: true, depth: Infinity }));
+        } catch (e) {
+           console.log("failed parse xml response");
+        }
+        //var strResponse = xhr.responseText;
+        //validate(strResponse);
+      }
+      else {
+        console.log("failed request");
+      }
+  }
+  xhr.open("POST","https://apitest.vrsinfo.de:4443/vrs/cgi/service/ass",false);        //Specifies the type(method,url,async) of request
+  xhr.responseType = 'document';
+  xhr.setRequestHeader("POST", "https://apitest.vrsinfo.de:4443/vrs/cgi/service/ass"); //Set Request Header
+  xhr.setRequestHeader("Content-Type", "text/xml");
+  xhr.setRequestHeader("Charset", "ISO-8859-15");
+  xhr.send(xmlPOST);        //Sends a request string to the server
+}//end of vrsCommunication
+
+function  validate (xml){
+  var schema = fs.readFileSync('./ASS2Schnittstelle_3.0.4.xsd').toString();
+   try {
+     xmllint.validateXML({ xml: xml, schema: schema});
+     console.log("validate success");
+   }
+   catch(error) {
+     console.log("validate failed");
+   }
+}
+//-----------------------------------------------------------------------------//
 function processRequestParameter(data){
   switch(data.parameter){
     case 'registration':
@@ -45,12 +189,13 @@ function processRequestParameter(data){
       break;
     case 'login':
       processLogin(data);
+      //startHouseholdManager();
       break;
       //...
     default:
       console.log("unknown parameter");
   }
-}
+}//end of validate()
 
 function processRegistration(userData){
   console.log("[processRegistration] Whole passedJsonAsObject: " + JSON.stringify(userData));
@@ -86,8 +231,6 @@ function processRegistration(userData){
   }
 }//end of processRegistration function
 
-
-
 function processLogin(userData){
 
   var knownUser = false;
@@ -107,6 +250,7 @@ function processLogin(userData){
     if (loadedJson[i].android_id == userData.android_id) {
       console.log("[processingRegistration] User registered. Logging in...");
       knownUser = true;
+      //startHouseholdManager(loadedJson[i].android_id)                         //startet den Haushaltmodus
       continue;
     }
   }
@@ -118,23 +262,72 @@ function processLogin(userData){
   }
 }//end of processLogin function
 
-/*
-function startHouseholdManager(household){
-  var users = [];
-  users = withdrawTheUsersFromHousehold(household);
-  compareTheActivitiesPeriods(users);
-}
+startHouseholdManager();////-------------------------------------------TEST---------Start-------------------------------------------------////
 
-function compareTheActivitiesPeriods(users){
-  for(var i; i < users.size; i++){
-    for(var j; j < users[i].schedule.size; j++)
-    {
-        if(users[i].activityInScheduleOnPosition(j).getPeriod == users[i+1].activityInScheduleOnPosition(j+1).getPeriod){
+function searchConflictTime(allUsers, deadlines){
+  var activities = {};
+  var activityDuration ={}
+  var wholeDuration = {};
+  var allDates = {};
+  var mustManaged = 0 ;
+  var conflictPlans = {};
+  var sum = 0;
 
-        }
+  for (var i = 0; i < allUsers.length; i++) {
+    activities[i] = getObjects(allUsers[i],"activities","");                    //object with all activities of user with same household
+    activityDuration[i] = getObjects(allUsers[i],"activityDuration","");        //object with all activities duration
+    allDates[i] = "2000-01-01T"+ deadlines[i] +":00Z";                          //object with all deadlines as a full dummy dates (better send complete date)
+  }
+  for (var i = 0; i < allUsers.length; i++) {                                   //calculation of the whole activities duration
+    for (var x = 0; x < allUsers.length; x++) {
+      sum += Object.values(activityDuration[i])[x];
+    }
+    wholeDuration[i] = sum * 1000; //maybe in minutes!!
+  }
+  for (var x = 0; x < allUsers.length; x++) {                                    //check conflict schedules with deadlines and wholeDuration
+    for (var i = x+1; i < allUsers.length; i++) {
+      var firstDate = new Date(allDates[x])
+      var secDate = new Date(allDates[i])
+
+      if (firstDate.getTime() < secDate.getTime() - wholeDuration[i] || firstDate.getTime() > secDate.getTime()){ //Don't need create new activities plan
+        break;
+      }
+      else {
+        conflictPlans[mustManaged] = activities[x];
+        mustManaged += 1;
+        conflictPlans[mustManaged] = activities[i];
+        break;
+      }
     }
   }
-}*/
+  if (mustManaged != 0){
+    startActivitiesManager(conflictPlans);                                      //if there is a conflict, start function to resolve conflict
+  }
+  else {
+  //  console.log(inspect("No conflicts!", { colors: true, depth: Infinity }));
+  }
+}//end of searchConflictTime()
+
+function startActivitiesManager(conflictPlans) {
+
+}
+
+function startHouseholdManager(){
+  //dummy JSON with information about the users
+  var loadedData = fs.readFileSync("./Household.json");
+  var loadedJson = JSON.parse(loadedData);
+  //var loadedJsonLength = loadedJson.users;
+
+  var detectedUserInfo = getObjects(loadedJson,"div_id","android-20013fea6bdcc120c");
+  var householdID =  getObjects(detectedUserInfo,"house_id","").toString();
+  var allUsers =  getObjects(loadedJson,"house_id",householdID);
+
+  var deadlines =  getObjects(allUsers,"deadline","");
+  searchConflictTime(allUsers, deadlines);
+
+
+}//end of function startHouseholdManager()
+
 
 //Die Bindung an den Port sollte als letztes im Code stehen
 //Start server
