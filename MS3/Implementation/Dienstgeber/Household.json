@@ -1,0 +1,30 @@
+{
+    "household": [
+      {
+        "users": [
+          {"div_id": "android-20013fea6bdcc120c" , "username":"Peter", "currentSchedule": "zeitplan1" , "deadline":"08:00","house_id": "0", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 5},
+                                                                                                                                            {"activityName": "Duschen","activityDuration": 600, "priority": 4},
+                                                                                                                                            {"activityName": "föhnen","activityDuration": 600, "priority": 2}]},
+
+          {"div_id": "android-34013fea7bdcc120c" , "username":"Peter", "currentSchedule": "zeitplan1" , "deadline":"15:00","house_id": "0", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 1},
+                                                                                                                                            {"activityName": "Duschen","activityDuration": 600, "priority": 1},
+                                                                                                                                            {"activityName": "föhnen","activityDuration": 600, "priority": 1}]},
+
+
+          {"div_id": "android-2211fesfhjdcc82tc" , "username":"Klaus","currentSchedule": "Schulplan"  , "deadline":"15:00","house_id": "0","activities":[{"activityName": "Essen","activityDuration": 600, "priority": 2},
+                                                                                                                                            {"activityName": "Duschen","activityDuration": 600, "priority": 5},
+                                                                                                                                            {"activityName": "föhnen","activityDuration": 600, "priority": 4}]}
+          ]},
+      {
+        "users": [
+          {"div_id": "android-013feacsvbnnc10dc" , "username":"Nina","currentSchedule": "topPlan"  , "deadline":"09:00","house_id": "1", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 5},
+                                                                                                                                          {"activityName": "Duschen","activityDuration": 1200, "priority": 2},
+                                                                                                                                          {"activityName": "föhnen","activityDuration": 300, "priority": 1}]},
+
+          {"div_id": "android-40012feqwercc452c" , "username":"Olaf","currentSchedule": "Arbeit"  , "deadline":"09:00", "house_id": "1", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 2},
+                                                                                                                                        {"activityName": "Duschen","activityDuration": 900, "priority": 1},
+                                                                                                                                        {"activityName": "föhnen","activityDuration": 600, "priority": 1}]}
+
+        ]}
+    ]
+}
