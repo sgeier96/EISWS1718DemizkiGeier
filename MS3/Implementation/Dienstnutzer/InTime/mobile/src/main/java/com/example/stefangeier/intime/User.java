@@ -8,9 +8,11 @@ package com.example.stefangeier.intime;
 class User {
     private String username;
     private Schedule currentSchedule;
+    private String android_id;
 
-    User(String username){
+    User(String username, String android_id){
         this.username = username;
+        this.android_id = android_id;
     }
 
     public Schedule getSchedule(){

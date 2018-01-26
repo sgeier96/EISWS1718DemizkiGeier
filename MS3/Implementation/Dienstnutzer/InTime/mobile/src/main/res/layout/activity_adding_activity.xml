@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.stefangeier.intime.addingActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.stefangeier.intime.scheduleScreen">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/addingActivity_header"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginVertical="0dp"
+            android:background="@drawable/addingactivityheaderbar"
+            android:fitsSystemWindows="true">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/addingActivity_BackBtn"
+                    android:layout_width="20dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/left_arrow_key"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/addingActivity_HeaderLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginVertical="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/roboto"
+                    android:text="Adding activity"
+                    android:textAlignment="center"
+                    android:textColor="#F5F5F5"
+                    android:textSize="24sp"
+                    android:visibility="visible"
+                    android:onClick="enterOverviewScreen"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <Button
+                    android:id="@+id/addingActivity_OptionsBtn"
+                    android:layout_width="35dp"
+                    android:layout_height="33.87dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/optionsbtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="517dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.AppBarLayout
+                    android:id="@+id/schedules_scheduleBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginVertical="0dp"
+                    android:background="@drawable/newscheduleschedulebar"
+                    android:fitsSystemWindows="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/newScheduleActivities_nextScheduleLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginStart="30dp"
+                            android:fontFamily="@font/roboto"
+                            android:gravity="center_vertical"
+                            android:text='"Next Schedule"'
+                            android:textColor="#F5F5F5"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/addingActivitiy_timeLeftLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_marginRight="30dp"
+                            android:fontFamily="@font/roboto"
+                            android:gravity="center_vertical"
+                            android:text="Min : Sec"
+                            android:textAlignment="center"
+                            android:textColor="#F5F5F5"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+                    </android.support.constraint.ConstraintLayout>
+
+                </android.support.design.widget.AppBarLayout>
+
+                <TextView
+                    android:id="@+id/addingActivity_activityNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Activity name"
+                    android:textColor="#2783CA"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/schedules_scheduleBar" />
+
+                <EditText
+                    android:id="@+id/addingActivity_activityNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/addingactivityactivitynameedittext"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Enter here"
+                    android:textColor="#AAAAAA"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addingActivity_activityNameLabel" />
+
+                <TextView
+                    android:id="@+id/addingActivity_priorityLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Priority"
+                    android:textColor="#2783CA"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addingActivity_activityNameEditText" />
+
+                <Button
+                    android:id="@+id/addingActivity_DoneBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/newscheduleactivitiesdonebtn"
+                    android:text="Done!"
+                    android:textColor="#FAFAFA"
+                    android:onClick="enterScheduleScreen"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <SeekBar
+                    android:id="@+id/addingActivity_seekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    android:max="5"
+                    android:min="1"
+                    android:progress="1"
+                    android:soundEffectsEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addingActivity_priorityLabel" />
+
+                <ImageView
+                    android:id="@+id/addingActivity_prioritySpeechBubble"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/addingActivity_seekBar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/addingactivityspeechbubble" />
+
+                <TextView
+                    android:id="@+id/addingActivity_durationLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Duration"
+                    android:textColor="#2783CA"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addingActivity_seekBar" />
+
+                <EditText
+                    android:id="@+id/addingActivity_durationEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/newscheduleschedulenameedittext"
+                    android:ems="10"
+                    android:inputType="time"
+                    android:text="Enter here"
+                    android:textColor="#AAAAAA"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addingActivity_durationLabel" />
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/addingActivity_calculatingGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/addingActivity_calculatingShade"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:contentDescription="calculatingShade"
+            android:cropToPadding="false"
+            android:scaleType="center"
+            android:visibility="visible"
+            app:srcCompat="@drawable/addingacitivtycalculatingshade"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <TextView
+            android:id="@+id/addingActivity_calculatingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="calculating..."
+            android:textAlignment="center"
+            android:textColor="#FAFAFA"
+            android:textSize="24sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/addingActivity_calculatingShade"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

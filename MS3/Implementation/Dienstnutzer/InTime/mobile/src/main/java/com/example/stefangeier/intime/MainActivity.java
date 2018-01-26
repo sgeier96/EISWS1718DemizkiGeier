@@ -5,10 +5,10 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Environment;
+import android.content.Intent;
+import android.provider.Settings.Secure;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,42 +25,33 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
 
-import org.json.JSONObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity{
 
     private VrsXmlParser parser = new VrsXmlParser();
+    private boolean loginSuccessfull = false;
 
     int toastDuration = Toast.LENGTH_SHORT;
     private NumberPicker durationPicker;
@@ -86,6 +77,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String android_id= Secure.getString(this.findViewById(android.R.id.content).getContext().getContentResolver(),
+                Secure.ANDROID_ID);
+
+        if(attemptLogin(android_id)){
+            sayText("Login successfull!");
+             /* Enter Overview-Screen */
+            Intent intent = new Intent(getApplicationContext(), Overview.class);
+            startActivity(intent);
+        } else {
+            sayText("Registration required!");
+            Intent intent = new Intent(getApplicationContext(), Registration.class);
+            startActivity(intent);
+        }
+
+
+
 
         durationPicker = (NumberPicker)findViewById(R.id.activityDurationNumberPicker);
         durationPicker.setMinValue(0);
@@ -99,7 +106,14 @@ public class MainActivity extends AppCompatActivity {
 
         showTimePickerDialog();
 
-
+       /* Button btnRegister = (Button) findViewById(R.id.register);
+        btnRegister.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(v.getContext(), Registration.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+        */
 
         tv1=(TextView)findViewById(R.id.textView);
         try {
@@ -113,17 +127,48 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        String s = departureTime.substring(departureTime.indexOf("T") + 1, departureTime.indexOf("+"));
-        departureInMinutes = convertToMinutes(convertToTime(s.substring(0,5)));
+        //String s = departureTime.substring(departureTime.indexOf("T") + 1, departureTime.indexOf("+"));
+        //departureInMinutes = convertToMinutes(convertToTime(s.substring(0,5)));
         //tv1.setText(String.valueOf(departureHHMM.getHours()) + ":" + String.valueOf(departureHHMM.getMinutes()));
-
-
-
 
     }
 
+    public boolean attemptLogin(String android_id){
+
+        String localhost = "http://10.0.2.2:6458/";
+        String herokuUrl = "https://eisws1718demizkigeier.herokuapp.com";
+
+        HashMap<String, String> httpHeader = new HashMap<>();
+        httpHeader.put("User-Agent", "Mozilla/5.0");
+        httpHeader.put("Accept-Language", "en-US, en;q=0.5");
+        httpHeader.put("Content-Type", "application/json");
+
+        SendPostTask sendLoginTask = new SendPostTask(localhost, "POST", httpHeader);
+        GsonWrapper gsonWrapper = new GsonWrapper(android_id, "login");
+        String statusCodeOfLogin;
+        try {
+            System.out.println("##############################");
+            statusCodeOfLogin = sendLoginTask.execute(gson.toJson(gsonWrapper)).get();
+            if (statusCodeOfLogin.equals("true")){
+                return true;
+            } else {
+                return false;
+            }
+        } catch (InterruptedException e){
+            e.printStackTrace();
+            return false;
+        } catch (ExecutionException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void sendPostRequest(View v){
-        SendPostTask sendPostTask = new SendPostTask();
+        HashMap<String, String> httpHeader = new HashMap<>();
+        httpHeader.put("User-Agent", "Mozilla/5.0");
+        httpHeader.put("Accept-Language", "en-US, en;q=0.5");
+        httpHeader.put("Content-Type", "application/json");
+        SendPostTask sendPostTask = new SendPostTask("http://10.0.2.2:6458/", "POST", httpHeader);
         sendPostTask.execute(writeJSON(v));
     }
 
@@ -173,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                      showDialog(DIALOG_ID);
-
                     }
                 }
         );
@@ -295,8 +339,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("While left.");
     }
 
-
-
     private static String getValue(String tag, Element element) {
         NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
         Node node = nodeList.item(0);
@@ -341,9 +383,9 @@ public class MainActivity extends AppCompatActivity {
         household.addResource(resource1);
         household.addResource(resource2);
         household.addResource(resource3);
-        User user1 = new User("stefan");
-        User user2 = new User("vadim");
-        User user3 = new User("fooman");
+        User user1 = new User("stefan", "dummyAndroid_ID1");
+        User user2 = new User("vadim", "dummyAndroid_ID2");
+        User user3 = new User("fooman", "dummyAndroid_ID3");
         household.addResident(user1);
         household.addResident(user2);
         household2.addResident(user3);
@@ -370,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String readFromFile(Context context) {
 
-        String ret = "";
+        String returnValue = "";
 
         try {
             InputStream inputStream = context.openFileInput("households.json");
@@ -386,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 inputStream.close();
-                ret = stringBuilder.toString();
+                returnValue = stringBuilder.toString();
             }
         }
         catch (FileNotFoundException e) {
@@ -395,44 +437,13 @@ public class MainActivity extends AppCompatActivity {
             Log.e("households reading", "Can not read file: " + e.toString());
         }
 
-        return ret;
-    }
-    
-/*  --------------JUST SOME OLD CODE... to be determined whether deletable or not------------------- 
-    private Date addTime(Date before, Date summand){
-        Date result = new Date();
-
-        result.setHours(before.getHours() + summand.getHours()%24);
-        result.setMinutes(before.getMinutes() + summand.getMinutes()%60);
-        //Maybe for hours too...(x+y>24, one day later)
-        /*if (before.getMinutes() + summand.getMinutes()>60) {
-            result.setHours(result.getHours() + 1);
-        }/
-
-        return result;
+        return returnValue;
     }
 
-    private Date substractTime(Date timeBeingSubstracted, Date timeToSubstract){
-        Date result = new Date();
-
-        /*if (timeBeingSubstracted.getMinutes() - timeToSubstract.getMinutes() < 0){
-            result.setHours(result.getHours()-1);
-            result.setMinutes(60 - (timeBeingSubstracted.getMinutes() - timeToSubstract.getMinutes()));
-        } else if(timeBeingSubstracted.getHours() - timeToSubstract.getHours() < 0){
-            result.setHours(24 - (timeBeingSubstracted.getHours() - timeToSubstract.getHours()));
-            //one day earlier to be implemented
-        } else if (timeBeingSubstracted.getMinutes() - timeToSubstract.getMinutes() > 0){
-            result.setHours(timeBeingSubstracted.getHours() - timeToSubstract.getHours());
-            result.setMinutes(timeBeingSubstracted.getMinutes() - timeToSubstract.getMinutes());
-        } else {
-            result.setHours(0);
-            result.setMinutes(0);
-        }/
-        result.setHours(timeBeingSubstracted.getHours() - timeToSubstract.getHours());
-        result.setMinutes(timeBeingSubstracted.getMinutes() - timeToSubstract.getMinutes());
-
-        return result;
-    } */
-
-   
+    public boolean getLoginSuccessfull(){
+        return loginSuccessfull;
+    }
+    public void setLoginSuccessfull(boolean newLoginState){
+        loginSuccessfull = newLoginState;
+    }
 }

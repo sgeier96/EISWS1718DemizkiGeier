@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.stefangeier.intime.scheduleScreen">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/scheduleScreen_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginVertical="0dp"
+        android:background="@drawable/addingactivityheaderbar"
+        android:fitsSystemWindows="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/schedule_BackBtn"
+                android:layout_width="20dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/left_arrow_key"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/schedule_HeaderLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginVertical="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto"
+                android:text='"this schedule"'
+                android:textAlignment="center"
+                android:textColor="#F5F5F5"
+                android:textSize="24sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/schedule_OptionsBtn"
+                android:layout_width="35dp"
+                android:layout_height="33.87dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/optionsbtn"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="517dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/schedules_scheduleBar"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_marginVertical="0dp"
+                android:background="@drawable/schedulerectangle"
+                android:fitsSystemWindows="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/schedule_startsInLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center_vertical"
+                        android:text="starts in:"
+                        android:textColor="#F5F5F5"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/schedule_timeLeftLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center_vertical"
+                        android:text="Min : Sec"
+                        android:textAlignment="center"
+                        android:textColor="#F5F5F5"
+                        android:textSize="48sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <Button
+                android:id="@+id/schedule_activity1Btn"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/schedulenextactivity"
+                android:longClickable="true"
+                android:text='"activitiy #1"'
+                android:textAllCaps="false"
+                android:textColor="#FAFAFA"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/schedules_scheduleBar" />
+
+            <Button
+                android:id="@+id/schedule_activity2Btn"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/schedulesecondactivity"
+                android:longClickable="true"
+                android:text='"activitiy #2"'
+                android:textAllCaps="false"
+                android:textColor="#489DDE"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/schedule_activity1Btn" />
+
+            <Button
+                android:id="@+id/schedule_activity3Btn"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/schedulenothightlightedactivity"
+                android:longClickable="true"
+                android:text='"activity #3"'
+                android:textAllCaps="false"
+                android:textColor="#489DDE"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/schedule_activity2Btn" />
+
+            <Button
+                android:id="@+id/schedule_activity4Btn"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/schedulenothightlightedactivity"
+                android:longClickable="true"
+                android:text='"activity #4"'
+                android:textAllCaps="false"
+                android:textColor="#489DDE"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/schedule_activity3Btn" />
+
+            <ImageView
+                android:id="@+id/schedule_seperationLine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="#489DDE"
+                app:layout_constraintBottom_toTopOf="@+id/addingActivity_DoneBtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/line" />
+
+            <Button
+                android:id="@+id/addingActivity_DoneBtn"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@drawable/newscheduleactivitiesdonebtn"
+                android:onClick="enterAddActivityScreen"
+                android:text="Add activity"
+                android:textColor="#FAFAFA"
+                app:layout_constraintBottom_toTopOf="@+id/schedule_doneBtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/schedule_doneBtn"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@drawable/newschedulescreensettimebtn"
+                android:text="Done!"
+                android:textColor="#489DDE"
+                android:onClick="enterMySchedulesScreen"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.constraint.ConstraintLayout>

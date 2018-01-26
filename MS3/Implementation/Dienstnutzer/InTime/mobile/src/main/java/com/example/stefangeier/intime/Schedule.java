@@ -8,11 +8,12 @@ import java.util.ArrayList;
 
 class Schedule {
     private ArrayList<Activity> activities = new ArrayList<>();
+    private int hourDeadline;
+    private int minuteDeadline;
 
     public void add(Activity activity){
         activities.add(activity);
     }
-
     public void remove(Activity activity){
         activities.remove(activity);
     }

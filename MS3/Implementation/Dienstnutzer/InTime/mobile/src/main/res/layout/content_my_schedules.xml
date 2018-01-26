@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/mySchedules_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginVertical="0dp"
+            android:background="@drawable/addingactivityheaderbar"
+            android:fitsSystemWindows="true">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/mySchedules_backBtn"
+                    android:layout_width="20dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/left_arrow_key"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/mySchedules_OptionsBtn"
+                    android:layout_width="35dp"
+                    android:layout_height="33.87dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/optionsbtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/mySchedules_ScreenLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginVertical="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/title_activity_my_schedules"
+                    android:textAlignment="center"
+                    android:textColor="#F5F5F5"
+                    android:textSize="24sp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <TextView
+            android:id="@+id/startsInLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:text="starts in"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mySchedules_appbar" />
+
+        <TextView
+            android:id="@+id/nameLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
+            android:text="name"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/startsInLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mySchedules_appbar" />
+
+        <Button
+            android:id="@+id/mySchedules_schedule1Btn"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/myschedulesschedulebtn"
+            android:fontFamily="@font/roboto"
+            android:longClickable="true"
+            android:text='"schedule #1"'
+            android:textColor="#489DDE"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
+
+        <Button
+            android:id="@+id/mySchedules_schedule2Btn"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/myschedulesschedulebtn"
+            android:fontFamily="@font/roboto"
+            android:longClickable="true"
+            android:text='"schedule #1"'
+            android:textColor="#489DDE"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mySchedules_schedule1Btn" />
+
+        <Button
+            android:id="@+id/mySchedules_newSchedule"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/myschedulesnewschedulebtn"
+            android:text="@string/title_activity_new_schedule"
+            android:textColor="#F5F5F5"
+            android:onClick="enterNewScheduleScreen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.design.widget.CoordinatorLayout>

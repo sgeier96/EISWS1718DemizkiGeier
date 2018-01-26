@@ -8,6 +8,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,35 +35,35 @@ public class VrsXmlParser {
     }
 
     private List<Entry> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<Entry> entries = new ArrayList<Entry>();
+        List<Entry> entries = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, namespace, "Response");
-        while(parser.next() != XmlPullParser.END_TAG){
+        while(parser.next() != XmlPullParser.END_DOCUMENT){
             if(parser.getEventType() != XmlPullParser.START_TAG){
                 continue;
             }
             String name = parser.getName();
-            //Starts by looking for the Object tag
-             if(name.equals("StopTimetable")){
-                System.out.println("StopTimetable found");
-            } else if(name.equals("StopEvents")){
-                System.out.println("StopEvents found");
-            } else if(name.equals("StopEvent")){
-                System.out.println("StopEvent found");
+            //Starts by looking for the Stop tag
+             if(name.equals("Stop")){
+                System.out.println("Stop found");
                 entries.add(readEntry(parser));
             } else {
-                 System.out.println("skipped");
-                 skip(parser);
-            }
+                 System.out.println(name + " skipped");
+                 //skip(parser);
+                 //parser.next();
+             }
         }
         return entries;
     }
 
     public static class Entry {
-        public final int id;
-        public final String line;
-        public final String direction;
-        public final String departureTime;
+        public int id = -1;
+        public String line = null;
+        public String direction = null;
+        public String departureTime = null;
+        public int stopId = -1;
+        public int vrsNr = -1;
+        public String globalId = null;
 
         private Entry(int id, String line, String direction, String departureTime){
             this.id = id;
@@ -70,36 +71,87 @@ public class VrsXmlParser {
             this.direction = direction;
             this.departureTime = departureTime;
         }
+
+        //Entry for rectangular coordinate busstop requests
+        private Entry(int stopId, int vrsNr, String globalId){
+            this.stopId = stopId;
+            this.vrsNr = vrsNr;
+            this.globalId = globalId;
+        }
     }
 
     //Parses the contents of an entry. If it encounters an id, line, direction or departureTime tag,
     //hands them of to their respective "read" methods for processing. Otherwise, skip the tag
 
     private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, namespace, "StopEvent");
+        parser.require(XmlPullParser.START_TAG, namespace, "Stop");
         int id = -1;
         String line = null;
         String direction = null;
         String departureTime = null;
+        int stopId = -1;
+        int vrsNr = -1;
+        String globalId = null;
+        String name = parser.getName();
+
+        if (name.equals("Stop")){
+            System.out.println("[READ ENTRY] About to process 'Stop'");
+            stopId = readStopId(parser);
+            System.out.println(stopId);
+        }
 
         while (parser.next() != XmlPullParser.END_TAG){
             if (parser.getEventType() != XmlPullParser.START_TAG){
                 continue;
             }
-            String name = parser.getName();
-            if (name.equals("ID")){
-                id = readId(parser);
-            } else if (name.equals("Line")){
-                line = readLine(parser);
-            } else if (name.equals("Direction")){
-                direction = readDirection(parser);
-            } else if (name.equals("DepartureTime")){
-                departureTime = readDepartureTime(parser);
-            } else {
+            name = parser.getName();
+            if (name.equals("NumberID")) {
+                System.out.println("[READ ENTRY] NumberID found!");
+
+                HashMap<String, String> resultHashMap = readNumberId(parser);
+                if (resultHashMap.containsKey("vrsNr")) {
+                    vrsNr = Integer.parseInt(resultHashMap.get("vrsNr"));
+                    parser.nextTag();
+                }
+                resultHashMap = readNumberId(parser);
+                if (resultHashMap.containsKey("globalId")) {
+                    globalId = resultHashMap.get("globalId");
+                }
+            }else {
                 skip(parser);
             }
         }
-        return new Entry(id, line, direction, departureTime);
+        //return new Entry(id, line, direction, departureTime);
+        return new Entry(stopId, vrsNr, globalId);
+    }
+
+    //Processes 'Stop ID' tags in the response
+    private int readStopId(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, namespace, "Stop");
+        System.out.println("in readStopId");
+        String sStopId = parser.getAttributeValue(null, "ID");
+        System.out.println("STOP ID=\"" + sStopId + "\"");
+        return Integer.parseInt(sStopId);
+    }
+
+    //Processes 'NumberID' tags in the response
+    private HashMap<String, String> readNumberId(XmlPullParser parser) throws IOException, XmlPullParserException{
+        HashMap<String, String> resultHashMap = new HashMap<>();
+        parser.require(XmlPullParser.START_TAG, namespace, "NumberID");
+        String tag = parser.getName();
+        String numberRangeValue = parser.getAttributeValue(null, "NumberRange");
+
+       if(tag.equals("NumberID")){
+           if(numberRangeValue.equals("VRSNr")){
+               resultHashMap.put("vrsNr", readText(parser));
+           }
+           if(numberRangeValue.equals("GlobalID")){
+               resultHashMap.put("globalId", readText(parser));
+           }
+       }
+
+        parser.require(XmlPullParser.END_TAG, namespace, "NumberID");
+        return resultHashMap;
     }
 
     //Processes id tags in the response

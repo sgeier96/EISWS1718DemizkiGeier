@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.stefangeier.intime">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-feature android:name="android.hardware.location.gps" />
+
 
     <application
         android:allowBackup="true"
@@ -19,6 +23,39 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Registration"
+            android:label="@string/title_activity_registration"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Overview"
+            android:label="@string/title_activity_overview"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".mySchedules"
+            android:label="@string/title_activity_my_schedules"
+            android:parentActivityName=".Overview"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.stefangeier.intime.Overview" />
+        </activity>
+        <activity android:name=".newSchedule" />
+        <activity android:name=".newSchedule_activities" />
+        <activity android:name=".scheduleScreen" />
+        <activity android:name=".addingActivity" />
+        <activity android:name=".Executing"></activity>
     </application>
-    
+
 </manifest>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.example.stefangeier.intime.MainActivity">
+
+    <!-- USERNAME-INPUTFIELD -->
+    <EditText
+        android:id="@+id/editUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Enter username" />
+
+    <!-- CONFIRMATION-BUTTON -->
+    <Button
+        android:id="@+id/registerDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="259dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="950px"/>
+
+
+</RelativeLayout>
