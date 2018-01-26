@@ -1,2 +1,48 @@
 node_modules/
 MS1/Artefakte/*
+package.json
+package-lock.json
+#Taken from https://stackoverflow.com/a/17803964/9005850
+#built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+MS3/Implementation/Dienstnutzer/InTime/**/bin/*
+MS3/Implementation/Dienstnutzer/InTime/**/gen/*
+
+# Local configuration file (sdk path, etc)
+MS3/Implementation/Dienstnutzer/InTime/local.properties
+
+# Windows thumbnail db
+MS3/Implementation/Dienstnutzer/InTime/**/Thumbs.db
+
+# OSX files
+MS3/Implementation/Dienstnutzer/InTime/.DS_Store
+
+# Android Studio
+MS3/Implementation/Dienstnutzer/InTime/*.iml
+MS3/Implementation/Dienstnutzer/InTime/.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+MS3/Implementation/Dienstnutzer/InTime/.gradle
+MS3/Implementation/Dienstnutzer/InTime/build/
+MS3/Implementation/Dienstnutzer/InTime/**/.navigation
+MS3/Implementation/Dienstnutzer/InTime/**/captures/
+MS3/Implementation/Dienstnutzer/InTime/**/output.json 
+MS3/Implementation/Dienstnutzer/InTime/**/font/
+MS3/Implementation/Dienstnutzer/InTime/**/drawable/
+MS3/Implementation/Dienstnutzer/InTime/**/drawable-hdpi/
+MS3/Implementation/Dienstnutzer/InTime/**/drawable-mdpi/
+MS3/Implementation/Dienstnutzer/InTime/**/drawable-xhdpi/
+MS3/Implementation/Dienstnutzer/InTime/**/drawable-xxhdpi/
+MS3/Implementation/Dienstnutzer/InTime/**/drawable-xxxhdpi/
+
+#NDK
+MS3/Implementation/Dienstnutzer/InTime/**/obj/
+MS3/Implementation/Dienstnutzer/InTime/**/.externalNativeBuild
