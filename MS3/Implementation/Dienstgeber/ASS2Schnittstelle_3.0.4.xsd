@@ -1,0 +1,2453 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Mit XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) von Wolfgang Hölsken (Ingenieurgruppe IVV) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:complexType name="AddressType">
+		<xs:annotation>
+			<xs:documentation>Eine Adresse</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Number" type="NonEmptyStringType" minOccurs="0"/>
+			<xs:element name="Suffix" type="NonEmptyStringType" minOccurs="0"/>
+			<xs:element name="PostalCode" type="NonEmptyStringType" minOccurs="0"/>
+			<xs:element name="PostalDistrict" type="NonEmptyStringType" minOccurs="0"/>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0"/>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="ASSIDType">
+		<xs:annotation>
+			<xs:documentation>ID eines ASS-Objektes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+(\.\d+)*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumberIDType">
+		<xs:annotation>
+			<xs:documentation>Fremdnummer eines ASS-Objektes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumberRangeType">
+		<xs:annotation>
+			<xs:documentation>Nummernkreis eines ASS-Objektes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="BBox" type="xs:string"/>
+	<xs:complexType name="CategoryPOIType">
+		<xs:annotation>
+			<xs:documentation>Ein POI-Kategorie</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Synonym"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CityType">
+		<xs:annotation>
+			<xs:documentation>Eine Gemeinde</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GKZ" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Gemeindekennziffer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Abbr"/>
+										<xs:enumeration value="Synonym"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="BoundingRectangle" type="GeoRectangleType" minOccurs="0"/>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ortsmittelpunkt</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:element name="Coords" type="xs:string"/>
+	<xs:complexType name="DestinationType">
+		<xs:annotation>
+			<xs:documentation>Zielpunkt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ArrivalTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ankunftszeit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+		<xs:attribute name="Type" type="ObjectTypeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Typ des Objektes; Sonderfall: Type Koordinate verweist auf kein Objekt, ID ist nicht verfügbar.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DirectionsType">
+		<xs:annotation>
+			<xs:documentation>Fahrtanweisungen</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Direction" type="DirectionType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DirectionType">
+		<xs:annotation>
+			<xs:documentation>Eine Fahrtanweisung (Abschnitt)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Heading" type="HeadingType">
+				<xs:annotation>
+					<xs:documentation>Richtungsangabe; erste Angabe nordweisend, jede weitere relativ zur Ausgangsrichtung</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Street" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Straßenname</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Distance">
+				<xs:annotation>
+					<xs:documentation>Abschnittslänge in km</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:float">
+						<xs:minExclusive value="0.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Koordinate des Entscheidungspunkt</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="DisabledAccessPublicTransportType">
+		<xs:annotation>
+			<xs:documentation>Zugangsklassen für mobilitätseingeschränkte Personen zum ÖV</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value=""/>
+			<xs:enumeration value="Wheelchair"/>
+			<xs:enumeration value="AssistedWheelchair"/>
+			<xs:enumeration value="MobilityImpaired"/>
+			<xs:enumeration value="ChildrensPushChair"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="DistrictType">
+		<xs:annotation>
+			<xs:documentation>Ein Ortsteil</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Synonym"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="BoundingRectangle" type="GeoRectangleType" minOccurs="0"/>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0"/>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="GeoCoordinateListType">
+		<xs:list itemType="GeoCoordinateType"/>
+	</xs:simpleType>
+	<xs:simpleType name="GeoCoordinateType">
+		<xs:annotation>
+			<xs:documentation>Eine Koordinate</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+(\.\d+){0,1}(,\d+(\.\d+){0,1})+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GeoLineType">
+		<xs:annotation>
+			<xs:documentation>Ein Linienzug</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="GeoCoordinateListType">
+				<xs:attribute name="srsName" type="GeoSRSType" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="GeoPointType">
+		<xs:annotation>
+			<xs:documentation>Ein Punkt</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="GeoCoordinateType">
+				<xs:attribute name="srsName" type="GeoSRSType" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="GeoRectangleCoordinateType">
+		<xs:annotation>
+			<xs:documentation>Eine Koordinatenrechteck (=Liste mit genau zwei Koordinaten)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+(\.\d+){0,1}(,\d+(\.\d+){0,1})+ \d+(\.\d+){0,1}(,\d+(\.\d+){0,1})+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GeoRectangleType">
+		<xs:annotation>
+			<xs:documentation>Ein Rechteck</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="GeoRectangleCoordinateType">
+				<xs:attribute name="srsName" type="GeoSRSType" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="GeoSRSType">
+		<xs:annotation>
+			<xs:documentation>Bezeichnung des Koordinatensystems nach OGC bzw. AdV</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="urn:adv:crs:DE_DHDN_3GK2"/>
+			<xs:enumeration value="urn:adv:crs:DE_DHDN_3GK3"/>
+			<xs:enumeration value="urn:adv:crs:DE_DHDN_3GK4"/>
+			<xs:enumeration value="urn:adv:crs:DE_DHDN_3GK5"/>
+			<xs:enumeration value="urn:ivv:crs:DE_DHDN_3GK2_KM"/>
+			<xs:enumeration value="urn:ivv:crs:DE_DHDN_3GK3_KM"/>
+			<xs:enumeration value="urn:ivv:crs:DE_DHDN_3GK4_KM"/>
+			<xs:enumeration value="urn:ivv:crs:DE_DHDN_3GK5_KM"/>
+			<xs:enumeration value="urn:adv:crs:WGS84_Lat-Lon"/>
+			<xs:enumeration value="urn:adv:crs:ETRS89_UTM31"/>
+			<xs:enumeration value="urn:adv:crs:ETRS89_UTM32"/>
+			<xs:enumeration value="urn:adv:crs:ETRS89_UTM33"/>
+			<xs:enumeration value="urn:ivv:crs:ETRS89_UTM31_KM"/>
+			<xs:enumeration value="urn:ivv:crs:ETRS89_UTM32_KM"/>
+			<xs:enumeration value="urn:ivv:crs:ETRS89_UTM33_KM"/>
+			<xs:enumeration value="unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GroupReferenceType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Type" type="ObjectTypeType" use="required"/>
+				<xs:attribute name="ID" type="xs:integer" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="HeadingType">
+		<xs:annotation>
+			<xs:documentation>Richtung in Grad 0-359</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:minInclusive value="0"/>
+			<xs:maxExclusive value="360"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IDType">
+		<xs:annotation>
+			<xs:documentation>ID eines Objektes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="-1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="InfoMessagesType">
+		<xs:sequence>
+			<xs:element name="InfoMessage" type="InfoMessageType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InfoMessageType">
+		<xs:annotation>
+			<xs:documentation>Informationen für Endanwender</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Type" minOccurs="0">
+				<xs:simpleType>
+					<xs:annotation>
+						<xs:documentation>Art des Hinweises</xs:documentation>
+					</xs:annotation>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="Info">
+							<xs:annotation>
+								<xs:documentation>Allgemeine Information</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="Important">
+							<xs:annotation>
+								<xs:documentation>Wichtiger Hinweis</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="Stop">
+							<xs:annotation>
+								<xs:documentation>Nicht nutzbar</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="BookingRequired">
+							<xs:annotation>
+								<xs:documentation>Bedarfsverkehr erfordert Buchung</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="BookingRequired">
+							<xs:annotation>
+								<xs:documentation>Bedarfsverkehr erfordert Buchung</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="unknown"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Code" type="xs:integer" minOccurs="0"/>
+			<xs:element name="Text" type="xs:string" minOccurs="0"/>
+			<xs:element name="Link" type="xs:anyURI" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="StartDate" type="xs:dateTime" use="optional"/>
+		<xs:attribute name="EndDate" type="xs:dateTime" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="MonitorSegmentType"/>
+	<xs:complexType name="MonitorSegmentResponseType"/>
+	<xs:complexType name="MonitorLineType">
+		<xs:sequence>
+			<xs:element name="Origin" type="MonitorLineOriginType"/>
+			<xs:element name="Destination" type="MonitorLineDestinationType"/>
+		</xs:sequence>
+		<xs:attribute name="InternNumber" type="xs:integer">
+			<xs:annotation>
+				<xs:documentation>Interne Nummer</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LineNumber" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Linien-Nummer</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Product" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Verkehrsmittel</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="MonitorLineOriginType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="ASSID" type="ASSIDType">
+					<xs:annotation>
+						<xs:documentation>ASS-Nr</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Departure" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Abfahrtzeit auf dem Fahtabschnitt (UTC-Zeit:Datum/Zeit/Offset)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="MonitorLineDestinationType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="ASSID" type="ASSIDType">
+					<xs:annotation>
+						<xs:documentation>ASS-Nr</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Arrival" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Soll-Ankunftszeit auf dem Fahrtabschnitt (UTC-Zeit: Datum/Zeit/Offset) </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="MonitorOriginType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="ASSID" type="ASSIDType">
+					<xs:annotation>
+						<xs:documentation>ASS-Nr</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Departure" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Abfahrtzeit auf dem Fahtabschnitt (UTC-Zeit:Datum/Zeit/Offset)  (IST-Zeit) </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DepartureScheduled" type="xs:dateTime" use="optional">
+					<xs:annotation>
+						<xs:documentation>Soll-Abfahrtszeit auf dem Fahrtabschnitt (UTC-Zeit: Datum/Zeit/Offset) </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="MonitorDestinationType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="ASSID" type="ASSIDType">
+					<xs:annotation>
+						<xs:documentation>ASS-Nr</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MinInterchangeTime" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Mindest-Umstiegszeit für den Fahrtabschnitt zur Abfahrts-Hst. des nächsten Fahrtabschnitts</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Arrival" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Ankunftszeit auf dem Fahrtabschnitt (UTC-Zeit: Datum/Zeit/Offset) (IST-Zeit)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ArrivalScheduled" type="xs:dateTime" use="optional">
+					<xs:annotation>
+						<xs:documentation>Soll-Ankunftszeit auf dem Fahrtabschnitt (UTC-Zeit: Datum/Zeit/Offset)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="LegBicycleType">
+		<xs:annotation>
+			<xs:documentation>Fahrad-Teilabschnitt einer Route</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Segments">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="SegmentsType">
+							<xs:sequence maxOccurs="unbounded">
+								<xs:choice>
+									<xs:element name="SegmentBicycle" type="SegmentBicycleType"/>
+								</xs:choice>
+							</xs:sequence>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LegCarType">
+		<xs:annotation>
+			<xs:documentation>IV-Teilabschnitt einer Route</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Segments">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="SegmentsType">
+							<xs:sequence maxOccurs="unbounded">
+								<xs:choice>
+									<xs:element name="SegmentCar" type="SegmentCarType"/>
+									<xs:element name="SegmentBicycle" type="SegmentBicycleType"/>
+									<xs:element name="SegmentWalk" type="SegmentWalkType"/>
+								</xs:choice>
+							</xs:sequence>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Costs" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Amount" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Betrag in Euro</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LegPublicTransportType">
+		<xs:annotation>
+			<xs:documentation>ÖV-Teilabschnitt einer Route</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Segments">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="SegmentsType">
+							<xs:sequence maxOccurs="unbounded">
+								<xs:choice>
+									<xs:element name="SegmentPublicTransport" type="SegmentPublicTransportType"/>
+									<xs:element name="SegmentBicycle" type="SegmentBicycleType"/>
+									<xs:element name="SegmentWalk" type="SegmentWalkType"/>
+								</xs:choice>
+							</xs:sequence>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NumOfChanges" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Anzahl Umstiege</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Costs" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Tariff" type="TariffType" minOccurs="0"/>
+						<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+			<xs:element name="TimetablePeriod">
+				<xs:annotation>
+					<xs:documentation>Fahrplangueltigkeit</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DateFrom" type="xs:dateTime" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Fahrplangueltigkeit von diesem Datum</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DateTo" type="xs:dateTime" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Fahrplangueltigkeit bis zu diesem Datum</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DateVersion" type="xs:dateTime" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Fahrplanversion (Datum)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LegWalkType">
+		<xs:annotation>
+			<xs:documentation>Fußläufige-Teilabschnitt einer Route</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Segments">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="SegmentsType">
+							<xs:sequence maxOccurs="unbounded">
+								<xs:choice>
+									<xs:element name="SegmentWalk" type="SegmentWalkType"/>
+								</xs:choice>
+							</xs:sequence>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LineType">
+		<xs:annotation>
+			<xs:documentation>Ein Linienobjekt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Number" type="NonEmptyStringType"/>
+			<xs:element name="Name" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Synonym"/>
+										<xs:enumeration value="Temporary"/>
+										<xs:enumeration value="Touristic"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Product" type="PublicTransportProductType"/>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="ModeType">
+		<xs:annotation>
+			<xs:documentation>Modi</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="PublicTransport"/>
+			<xs:enumeration value="Car"/>
+			<xs:enumeration value="Bicycle"/>
+			<xs:enumeration value="Walk"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NonEmptyStringType">
+		<xs:annotation>
+			<xs:documentation>Nicht-leerer String</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ObjectInfoObjectType">
+		<xs:annotation>
+			<xs:documentation>Objekttype</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="City"/>
+			<xs:enumeration value="Address"/>
+			<xs:enumeration value="POI"/>
+			<xs:enumeration value="Stop"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ObjectSearchType">
+		<xs:annotation>
+			<xs:documentation>Suche bzw. Identifikation eines Objektes über ID mit Typ, Namen oder Geometrie. Eine Koordinate ohne ID- und Type-Attribut und ohne sonstige Angaben identifiziert einen Punkt.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice minOccurs="0">
+				<xs:element name="String">
+					<xs:annotation>
+						<xs:documentation>Unscharfe Objektsuche über String. Bei mehreren Objektklassen wird die Treffergüte pro Klasse in Relation gesetzt und entspr. schlechte Treffer werden rausgefiltert. Eine unabhängige Suche ist über die Kombination von Suchmenge möglich. s.u.</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:minLength value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Coordinate" type="GeoPointType">
+					<xs:annotation>
+						<xs:documentation>Objekte, die Koordinatenpunkt einschließen bzw. nächsgelegen sind, suchen.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CoordinateRectangle" type="GeoRectangleType">
+					<xs:annotation>
+						<xs:documentation>Objekte, die in angegebenem Rechteck liegen, suchen.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="Classes" minOccurs="0">
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation>Wahl der Objektklassen für die Suche</xs:documentation>
+					</xs:annotation>
+					<xs:sequence>
+						<xs:element name="City" type="SearchClassCityType" minOccurs="0"/>
+						<xs:element name="Stop" type="SearchClassStopType" minOccurs="0"/>
+						<xs:element name="Street" type="SearchClassStreetType" minOccurs="0"/>
+						<xs:element name="Address" type="SearchClassAddressType" minOccurs="0"/>
+						<xs:element name="CategoryPOI" type="SearchClassCategoryPOIType" minOccurs="0"/>
+						<xs:element name="POI" type="SearchClassPOIType" minOccurs="0"/>
+						<!--xs:element name="ParkAndRide" type="SearchClassParkAndRideType" minOccurs="0" maxOccurs="1"/-->
+						<xs:element name="TariffRegion" type="SearchClassTariffRegionType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Set" type="SearchSetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Objektsuche auf eine indirekt definierte Menge von Objekten beschränken.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType"/>
+		<xs:attribute name="Type" type="ObjectTypeType"/>
+	</xs:complexType>
+	<xs:complexType name="ObjectsType">
+		<xs:annotation>
+			<xs:documentation>Kollektion der definierten Objekte in ASS.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="City" type="CityType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="District" type="DistrictType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Stop" type="StopType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Street" type="StreetType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Address" type="AddressType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CategoryPOI" type="CategoryPOIType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="POI" type="POIType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- xsd:element name="ParkAndRide" type="ass:ParkAndRideType" minOccurs="0" maxOccurs="unbounded"/ -->
+			<xs:element name="Line" type="LineType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="ObjectTypeType">
+		<xs:annotation>
+			<xs:documentation>Bekannte Objekttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="Coordinate">
+				<xs:annotation>
+					<xs:documentation>Sonderfall: Freie Koordinate; Ist kein Objekt !</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Stop"/>
+			<xs:enumeration value="Address"/>
+			<xs:enumeration value="City"/>
+			<xs:enumeration value="District"/>
+			<xs:enumeration value="Street"/>
+			<xs:enumeration value="Line"/>
+			<xs:enumeration value="CategoryPOI"/>
+			<xs:enumeration value="POI"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="OriginType">
+		<xs:annotation>
+			<xs:documentation>Ausgangspunkt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DepartureTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Abfahrtszeit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+		<xs:attribute name="Type" type="ObjectTypeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Typ des Objektes; Sonderfall: Type Koordinate verweist auf kein Objekt, ID ist nicht verfügbar.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="POIType">
+		<xs:annotation>
+			<xs:documentation>Ein POI</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Nr" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="-1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="ID"/>
+										<xs:enumeration value="Synonym"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0"/>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="PublicTransportProductType">
+		<xs:annotation>
+			<xs:documentation>Verkehrsmittel ÖV</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="LongDistanceTrains"/>
+			<xs:enumeration value="RegionalTrains"/>
+			<xs:enumeration value="SuburbanTrains"/>
+			<xs:enumeration value="Underground"/>
+			<xs:enumeration value="LightRail"/>
+			<xs:enumeration value="Bus"/>
+			<xs:enumeration value="OnDemandServices"/>
+			<xs:enumeration value="CommunityBus"/>
+			<xs:enumeration value="Boat"/>
+			<xs:enumeration value="RailReplacementServices"/>
+			<xs:enumeration value="unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Request" type="RequestType">
+		<xs:annotation>
+			<xs:documentation>Anfrage</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="RequestJourneyType">
+		<xs:annotation>
+			<xs:documentation>
+        Anfrage Reisewunsch.
+        Start-, Via- und Zielpunkt werden über ObjectSearchType spezifiziert. Daher ist Angabe über ID/Typ oder indirekt über Objektsuche möglich, wobei das System bei Mehrdeutigkeit den besten Treffer automatisch auswählt.
+        Die Viapunkte beziehen sich immer auf den ersten Verkehrsmittelmodus bzw. auf den ÖV, falls im weiteren Verlauf kein Modus angegeben wird.
+        Bei multimodalen Suchen sind darüber hinaus Start-, Ziel- oder Viaangaben für die einzelnen Modi möglich (siehe "Mode").
+      </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Origin" type="ObjectSearchType" minOccurs="0"/>
+			<xs:element name="Via" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="ObjectSearchType">
+							<xs:attribute name="WaitingTime" type="xs:nonNegativeInteger" use="optional">
+								<xs:annotation>
+									<xs:documentation>Gewünschte Aufenthaltsdauer in Sekunden</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Destination" type="ObjectSearchType" minOccurs="0"/>
+			<xs:element name="SearchTime">
+				<xs:annotation>
+					<xs:documentation>Suchzeitpunkt</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute name="SearchDirection" default="Departure">
+								<xs:annotation>
+									<xs:documentation>Suchrichtung</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Arrival"/>
+										<xs:enumeration value="Departure"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Mode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+            Wahl der gewünschten Verkehrsmittel mit entsprechenden Optionen. Falls Mode fehlt wird ÖV mit Standardeinstellungen benutzt.
+            Die Reihenfolge gibt die Abfolge der Verkehrsmittel bei intermodaler Routensuche an.
+            In den einzelnen Modi können Start- / Ziel- und Viapunkte optional gesetzt werden, um die Routenbildung zu beinflussen.
+            Beim ÖV dürfen Start und Ziel auch vom globalen Start bzw. Ziel der Anfrage abweichen, da hier eine automatische Zu- bzw. Abwegsberechnung per Fußweg erfolgt -
+            ansonsten muss der Start des ersten und das Ziel des letzten Verkehrsmittels mit den globalen Angaben übereinstimmen oder weggelassen werden. Gleiches gilt für Ziel und Start aufeinanderfolgender Abschnitte.
+          </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded">
+						<xs:element name="PublicTransport" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence maxOccurs="unbounded">
+									<xs:element name="Origin" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="Via" type="ObjectSearchType" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation> Beim ÖV sind nur Haltestellen als Viapunkte zulässig!</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Destination" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="SearchInterval" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Suchintervall zur Auffindung mehrerer alternativer Routen in bestimmtem Zeitbereich. Voreinstellung ist 5 Routen</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:choice>
+												<xs:element name="Size" type="xs:nonNegativeInteger" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Intervalllänge in Sekunden für Suche über einen Zeitraum.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="NumOfRoutes" type="xs:positiveInteger" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>
+                                  Intervall wird durch Anzahl der Routen bestimmt.
+                                  Je nach Suchrichtung werden Abfahrten bzw. Ankünfte ab bzw. bis zum Suchzeitpunkt ermittelt.
+                                </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:sequence>
+													<xs:element name="NumOfRoutesBefore" type="xs:positiveInteger" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>
+																  Anzahl der Routen, die vor dem gewählten Zeitpunkt ankommen bzw. abfahren
+																</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="NumOfRoutesAfter" type="xs:positiveInteger" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>
+																	  Anzahl der Routen, die zum oder nach dem gewählten Zeitpunkt ankommen bzw. abfahren
+																</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:choice>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Product" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Produktauswahl für ÖV. Gruppen werden disjunktiv verknüpft.</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="PublicTransportProductType">
+												<xs:enumeration value="LongDistanceTrains"/>
+												<xs:enumeration value="RegionalTrains"/>
+												<xs:enumeration value="SuburbanTrains"/>
+												<xs:enumeration value="Underground"/>
+												<xs:enumeration value="LightRail"/>
+												<xs:enumeration value="Bus"/>
+												<xs:enumeration value="OnDemandServices"/>
+												<xs:enumeration value="CommunityBus"/>
+												<xs:enumeration value="Boat"/>
+												<xs:enumeration value="RailReplacementServices"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="SupplementalPayment" type="xs:boolean" default="0" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Nutzung zuschlagspflichtiger Produkte zulassen ?</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="DisabledAccessRequired" type="DisabledAccessPublicTransportType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Zugang für mobilitäts-eingeschränkte Personen erforderlich</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RadiusExtensionOrigin" type="xs:nonNegativeInteger" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Neben der nächsten Haltestelle dürfen auch solche benutzt werden, die darüber hinaus nicht weiter als die angegebenen zusätzlichen Distanz (in Metern) entfernt liegen</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RadiusExtensionDestination" type="xs:nonNegativeInteger" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Neben der nächsten Haltestelle dürfen auch solche benutzt werden, die darüber hinaus nicht weiter als die angegebenen zusätzlichen Distanz (in Metern) entfernt liegen</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ShortRadiusExtension" type="xs:integer" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>kurzer Fussweg bevorzugen</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="LittleTransfer" type="xs:integer" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>wenig Umstiege</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="FastRoute" type="xs:integer" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>schnellste Verbindung</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="TransferSpeed" type="xs:nonNegativeInteger" default="1000" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Umsteigegeschwindigkeit (sehr schnell = 250, schnell = 500, normal = 1000, langsam = 1500, sehr langsame = 2000)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="WalkSpeed" type="xs:nonNegativeInteger" default="3" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Gehgeschwindigkeit (langsam = 3km/h, normal = 4 km/h, schnell = 5 km/h)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Car" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Origin" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="Via" minOccurs="0" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:complexContent>
+												<xs:extension base="ObjectSearchType">
+													<xs:attribute name="WaitingTime" type="xs:nonNegativeInteger" use="optional">
+														<xs:annotation>
+															<xs:documentation>Gewünschte Aufenthaltsdauer in Sekunden</xs:documentation>
+														</xs:annotation>
+													</xs:attribute>
+												</xs:extension>
+											</xs:complexContent>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Destination" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="ConsiderTrafficInformation" type="xs:boolean" default="0" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Aktuelle Verkehrsinformationen berücksichtigen ?</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="NoDirections" type="xs:boolean" default="0" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Fahrtanweisung nicht ausgeben</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Bicycle" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Origin" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="Via" minOccurs="0" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:complexContent>
+												<xs:extension base="ObjectSearchType">
+													<xs:attribute name="WaitingTime" type="xs:nonNegativeInteger" use="optional">
+														<xs:annotation>
+															<xs:documentation>Gewünschte Aufenthaltsdauer in Sekunden</xs:documentation>
+														</xs:annotation>
+													</xs:attribute>
+												</xs:extension>
+											</xs:complexContent>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Destination" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="Speed" default="15.0" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Durchschnittsgeschwindigkeit</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:float">
+												<xs:minExclusive value="0.0"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Walk" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Origin" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="Via" minOccurs="0" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:complexContent>
+												<xs:extension base="ObjectSearchType">
+													<xs:attribute name="WaitingTime" type="xs:nonNegativeInteger" use="optional">
+														<xs:annotation>
+															<xs:documentation>Gewünschte Aufenthaltsdauer in Sekunden</xs:documentation>
+														</xs:annotation>
+													</xs:attribute>
+												</xs:extension>
+											</xs:complexContent>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Destination" type="ObjectSearchType" minOccurs="0"/>
+									<xs:element name="Speed" default="3.0" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Durchschnittsgeschwindigkeit</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:float">
+												<xs:minExclusive value="0.0"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="NoDirections" type="xs:boolean" default="0" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Fahrtanweisung nicht ausgeben</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Options" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optionen zur Routensuche und -ausgabe.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Output" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Ausgabeoptionen.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="SRSName" type="GeoSRSType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Angabe des gewünschten Koordinatensystems für die Ausgabe. Fehlt die Angabe wird - falls angegeben und vorhanden - das Koordinatensystem von Start, Ziel bzw. Viapunkten verwendet. Ansonsten erfolgt Ausgabe bezogen auf das Koordinatensystem der Datengrundlage.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="NoShape" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Routenverlauf nicht ausgeben</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="MonitorID" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Fahrt-ID und Fahrtabschnits-ID zur Fahrtüberwachung ausgeben </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestObjectInfoType">
+		<xs:annotation>
+			<xs:documentation>Informationen Objekten abfragen</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectSearch" type="ObjectSearchType"/>
+			<xs:element name="Options" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optionen zur Objektabfrage und -ausgabe.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NumOfObjects" type="xs:nonNegativeInteger" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Gewünschte Anzahl Objekte. Falls Suchanfrage auf größere Zahl von Objekten passt werden die ersten NumOfObjects Objekte ausgegeben.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Output" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Ausgabeoptionen.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="SRSName" type="GeoSRSType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Angabe des gewünschten Koordinatensystems für die Ausgabe. Fehlt die Angabe wird das Koordinatensystem der Datengrundlage verwendet.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestMonitorType">
+		<xs:annotation>
+			<xs:documentation>Anfrage Fahrtueberwachung</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="ResponseMonitorType">
+		<xs:annotation>
+			<xs:documentation>Antwort Fahrtueberwachung</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="MonitorSegment">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="MonitorSegmentResponseType">
+							<xs:sequence>
+								<xs:element name="Origin">
+									<xs:complexType>
+										<xs:attribute name="ASSID"/>
+										<xs:attribute name="Departure"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="Destination">
+									<xs:complexType>
+										<xs:attribute name="ASSID"/>
+										<xs:attribute name="Arrival"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="Next" minOccurs="0">
+									<xs:complexType>
+										<xs:attribute name="ASSID">
+											<xs:annotation>
+												<xs:documentation>ASS-Nr. (Ber.Blo.Mas) der Haltestelle, die als zeitlich nächste nach dem angefragten Suchzeitpunkt auf dem aktuellen Fahrtabschnitt folgt</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+										<xs:attribute name="Arrival">
+											<xs:annotation>
+												<xs:documentation>Ankunftszeit an der nächsten Haltestelle (UTC-Zeit: Datum/Zeit/Offset)</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="ID"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestPingType">
+		<xs:annotation>
+			<xs:documentation>Anfrage Systemstatus</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="RequestStopTimetableType">
+		<xs:annotation>
+			<xs:documentation>Haltestellenfahrplan abfragen</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LineName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Linienname</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Direction" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Richtungsangabe</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Location" type="ObjectSearchType"/>
+			<xs:element name="SearchTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Suchzeitpunkt</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute name="SearchDirection" default="Departure">
+								<xs:annotation>
+									<xs:documentation>Suchrichtung</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Arrival"/>
+										<xs:enumeration value="Departure"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SearchInterval" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Suchintervall zur Abgrenzung der auszuweisenden Ankünfte bzw. Abfahrten. Voreinstellung ist 10.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="Size" type="xs:nonNegativeInteger">
+							<xs:annotation>
+								<xs:documentation>Intervalllänge in Sekunden für Suche über einen Zeitraum.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:choice>
+							<xs:element name="NumOfStopEvents" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>
+                    Intervall wird durch Anzahl der Ankünfte bzw. Abfahrten bestimmt.
+                    Je nach Suchrichtung werden Abfahrten bzw. Ankünfte ab bzw. bis zum Suchzeitpunkt ermittelt.
+                  </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="NumOfStopEventsBefore" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>
+                      Anzahl der Ankünfte bzw. Abfahrten, die vor dem gewählten Zeitpunkt ankommen bzw. abfahren
+                    </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="NumOfStopEventsAfter" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>
+                      Anzahl der Ankünfte bzw. Abfahrten, die zum oder nach dem gewählten Zeitpunkt ankommen bzw. abfahren
+                    </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:choice>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Product" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Produktauswahl für ÖV. Gruppen werden disjunktiv verknüpft.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="PublicTransportProductType">
+						<xs:enumeration value="LongDistanceTrains"/>
+						<xs:enumeration value="RegionalTrains"/>
+						<xs:enumeration value="SuburbanTrains"/>
+						<xs:enumeration value="Underground"/>
+						<xs:enumeration value="LightRail"/>
+						<xs:enumeration value="Bus"/>
+						<xs:enumeration value="OnDemandServices"/>
+						<xs:enumeration value="CommunityBus"/>
+						<xs:enumeration value="Boat"/>
+						<xs:enumeration value="RailReplacementServices"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SupplementalPayment" type="xs:boolean" default="0" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nutzung zuschlagspflichtiger Produkte zulassen ?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DisabledAccessRequired" type="DisabledAccessPublicTransportType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zugang für mobilitäts-eingeschränkte Personen erforderlich</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RadiusExtensionOrigin" type="xs:nonNegativeInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Neben der nächsten Haltestelle (Start) dürfen auch solche benutzt werden, die darüber hinaus nicht weiter als die angegebenen zusätzlichen Distanz (in Metern) entfernt liegen</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RadiusExtensionDestination" type="xs:nonNegativeInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Neben der nächsten Haltestelle (Ziel) dürfen auch solche benutzt werden, die darüber hinaus nicht weiter als die angegebenen zusätzlichen Distanz (in Metern) entfernt liegen</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Options" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optionen zur Haltestellenfahrplanabfrage und -ausgabe.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Output" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Ausgabeoptionen.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="SRSName" type="GeoSRSType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Angabe des gewünschten Koordinatensystems für die Ausgabe. Fehlt die Angabe wird das Koordinatensystem der Datengrundlage verwendet.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestShortHaulType">
+		<xs:annotation>
+			<xs:documentation>Kurzstreckenziele abfragen</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Location" type="ObjectSearchType"/>
+			<xs:element name="Options" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optionen zur Objektabfrage und -ausgabe.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Output" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Ausgabeoptionen.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="SRSName" type="GeoSRSType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Angabe des gewünschten Koordinatensystems für die Ausgabe. Fehlt die Angabe wird das Koordinatensystem der Datengrundlage verwendet.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestType">
+		<xs:annotation>
+			<xs:documentation>Verfügbare Anfrage</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Ping" type="RequestPingType"/>
+			<xs:element name="ObjectInfo" type="RequestObjectInfoType"/>
+			<xs:element name="StopTimetable" type="RequestStopTimetableType"/>
+			<xs:element name="ShortHaul" type="RequestShortHaulType"/>
+			<xs:element name="Journey" type="RequestJourneyType"/>
+			<xs:element name="Monitor">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="RequestMonitorType">
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="MonitorSegment">
+									<xs:complexType>
+										<xs:complexContent>
+											<xs:extension base="MonitorSegmentType">
+												<xs:sequence>
+													<xs:element name="Line" type="MonitorLineType">
+														<xs:annotation>
+															<xs:documentation>Fahrt-ID</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="Origin" type="MonitorOriginType">
+														<xs:annotation>
+															<xs:documentation>Abfahrts-Haltestelle auf Fahrtabschnitt</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="Destination" type="MonitorDestinationType">
+														<xs:annotation>
+															<xs:documentation>Ankunfts-Haltestelle auf Fahrtabschnitt</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="Next">
+														<xs:annotation>
+															<xs:documentation>Zeitpunkt der Ermittlung für die nächste Haltestelle (UTC-Zeit: Datum/Zeit/Offset)</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:attribute name="SearchTime"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="ID"/>
+											</xs:extension>
+										</xs:complexContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="Response" type="ResponseType">
+		<xs:annotation>
+			<xs:documentation>Antwort</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ResponseJourneyObjectType">
+		<xs:annotation>
+			<xs:documentation>Kollektion der definierten Objekte in ASS.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="City" type="CityType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="District" type="DistrictType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Stop" type="StopType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Street" type="StreetType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Address" type="AddressType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CategoryPOI" type="CategoryPOIType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="POI" type="POIType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- xs:element name="ParkAndRide" type="ParkAndRideType" minOccurs="0" maxOccurs="unbounded"/ -->
+			<xs:element name="Line" type="LineType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResponseJourneyType">
+		<xs:annotation>
+			<xs:documentation>Antwort Reisewunsch. Route und Kollektion aller referenzierten Objekte.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Routes">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Route" type="RouteType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Objects" type="ResponseJourneyObjectType"/>
+			<xs:element name="ResponseStatus" type="SystemMessageResponseJourneyType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResponseObjectInfoType">
+		<xs:annotation>
+			<xs:documentation>Antwort Informationen zu Objekten.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Objects" type="ObjectsType">
+				<xs:annotation>
+					<xs:documentation>Objekte, die unmittelbar durch die Suche gefunden worden sind.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferencedObjects" type="ObjectsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Objekte, die innerhalb gefundener Objekte referenziet werden.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResponseStatus" type="SystemMessageResponseObjectInfoType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResponsePingType">
+		<xs:annotation>
+			<xs:documentation>Antwort Systemstatus</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="ResponseStopTimeTableObjectType">
+		<xs:annotation>
+			<xs:documentation>Kollektion der definierten Objekte in ASS.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="City" type="CityType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="District" type="DistrictType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Stop" type="StopType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Street" type="StreetType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Address" type="AddressType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CategoryPOI" type="CategoryPOIType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="POI" type="POIType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- xs:element name="ParkAndRide" type="ParkAndRideType" minOccurs="0" maxOccurs="unbounded"/ -->
+			<xs:element name="Line" type="LineType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResponseStopTimetableType">
+		<xs:annotation>
+			<xs:documentation>Antwort Haltestellenfahrplan.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StopEvents">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="StopEvent" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Eine Ankunft bzw. Abfahrt</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="StopPublicTransportType">
+										<xs:sequence>
+											<xs:element name="VehicleJourney" type="VehicleJourneyType">
+												<xs:annotation>
+													<xs:documentation>Eine Fahrt</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Lines" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Line" type="LineType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Objects" type="ResponseStopTimeTableObjectType"/>
+			<xs:element name="ResponseStatus" type="SystemMessageResponseStopTimetableType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResponseShortHaulType">
+		<xs:annotation>
+			<xs:documentation>Antwort Kurzstrecken</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Stops" type="ObjectsType">
+				<xs:annotation>
+					<xs:documentation>Es kommen die Haltestllen, die als Kurzstrecke erreicht werden können, zurück.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferencedObjects" type="ObjectsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Objekte, die innerhalb gefundener Objekte referenziet werden.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResponseStatus" type="SystemMessageResponseShortHaulType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResponseType">
+		<xs:annotation>
+			<xs:documentation>Verfügbare Antworten</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="Ping" type="ResponsePingType"/>
+				<xs:element name="Error" type="SystemMessageErrorType"/>
+				<xs:element name="ObjectInfo" type="ResponseObjectInfoType"/>
+				<xs:element name="StopTimetable" type="ResponseStopTimetableType"/>
+				<xs:element name="ShortHaul" type="ResponseShortHaulType"/>
+				<xs:element name="Journey" type="ResponseJourneyType"/>
+				<xs:element name="Monitor" type="ResponseMonitorType"/>
+			</xs:choice>
+			<xs:element name="SystemStatus" type="SystemStatusType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RouteType">
+		<xs:annotation>
+			<xs:documentation>Route</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Legs">
+				<xs:annotation>
+					<xs:documentation>Eine Route setzt sich aus einer oder mehreren Teilrouten zusammen</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:choice>
+							<xs:element name="LegPublicTransport" type="LegPublicTransportType"/>
+							<xs:element name="LegCar" type="LegCarType"/>
+							<xs:element name="LegBicycle" type="LegBicycleType"/>
+							<xs:element name="LegWalk" type="LegWalkType"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchClassAddressType">
+		<xs:annotation>
+			<xs:documentation>Suchklasse Adresse</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NumOfObjects" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Anzahl an Objekten</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GKZ" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bevorzugte GKZ , Rest kommt danach</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BL" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bevorzugtes Bundesland, Rest kommt danach</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchClassCategoryPOIType">
+		<xs:annotation>
+			<xs:documentation>Suchklasse Adresse</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="SearchClassCityType">
+		<xs:annotation>
+			<xs:documentation>Suchklasse Gemeinde</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NumOfObjects" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Anzahl an Objekten</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GKZ" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bevorzugte GKZ , Rest kommt danach</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BL" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bevorzugtes Bundesland, Rest kommt danach</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchClassPOIType">
+		<xs:annotation>
+			<xs:documentation>Suchklasse POI</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Nr" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>POI nach POI-DB Nr suchen (ggf. nach Kategorien filtern, da Nr nicht zwingend über alle POI eindeutig ist)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumOfObjects" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Anzahl an Objekten</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GKZ" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bevorzugte GKZ , Rest kommt danach</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BL" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bevorzugtes Bundesland, Rest kommt danach</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchClassStopType">
+		<xs:annotation>
+			<xs:documentation>Suchklasse Halt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ASSID" type="ASSIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Halt nach ASS-ID suchen</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence>
+				<xs:element name="NumberRange" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Nummernkreis (VRSNr oder GlobalID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="NumberID" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Fremdnummer</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:element name="UseAbbr" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Haltestellenkürzel bei Suche verwenden? Default:0 </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumOfObjects" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Anzahl an Objekten</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchClassStreetType">
+		<xs:annotation>
+			<xs:documentation>Suchklasse Straße</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="SearchClassTariffRegionType">
+		<xs:sequence>
+			<xs:element name="TariffRegionNumber"/>
+			<xs:element name="TariffRegionName"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchSetType">
+		<xs:annotation>
+			<xs:documentation>Indirekt durch Kombination beliebiger Suchresultate definierte Menge, die zur Einschränkung des Suchraums dient.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Union">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Set" type="SearchSetType" minOccurs="2" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ObjectSearch" type="ObjectSearchType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="SegmentBicycleType">
+		<xs:annotation>
+			<xs:documentation>Fahrrad-Routensegment</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Origin" type="OriginType"/>
+			<xs:element name="Destination" type="DestinationType"/>
+			<xs:element name="TravelTime" type="xs:nonNegativeInteger">
+				<xs:annotation>
+					<xs:documentation>Reisezeit in Sekunden</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Distance" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Länge des Segmentes in km</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Directions" type="DirectionsType" minOccurs="0"/>
+			<xs:element name="Shape" type="GeoLineType" minOccurs="0"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SegmentCarType">
+		<xs:annotation>
+			<xs:documentation>IV-Routensegment</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Origin" type="OriginType"/>
+			<xs:element name="Destination" type="DestinationType"/>
+			<xs:element name="TravelTime" type="xs:nonNegativeInteger">
+				<xs:annotation>
+					<xs:documentation>Reisezeit in Sekunden</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Distance" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Länge des Segmentes in km</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Directions" type="DirectionsType" minOccurs="0"/>
+			<xs:element name="Shape" type="GeoLineType" minOccurs="0"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SegmentPublicTransportType">
+		<xs:annotation>
+			<xs:documentation>ÖV-Routensegment</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Origin">
+				<xs:annotation>
+					<xs:documentation>Start im ÖV-Segment kann um Ist-Daten ergänzt werden</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="OriginType">
+							<xs:sequence>
+								<xs:element name="DepartureTimeScheduled" type="xs:dateTime" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Abfahrtszeit laut Fahrplan, falls aktuelle Daten in die Berechnung eingegangen sind.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="ActualData" type="xs:boolean" use="optional" default="false">
+								<xs:annotation>
+									<xs:documentation>Es liegen Ist-Daten für Startpunkt vor</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Destination">
+				<xs:annotation>
+					<xs:documentation>Ziel im ÖV-Segment kann um Ist-Daten ergänzt werden</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="DestinationType">
+							<xs:sequence>
+								<xs:element name="ArrivalTimeScheduled" type="xs:dateTime" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Ankunftszeit laut Fahrplan, falls aktuelle Daten in die Berechnung eingegangen sind.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="ActualData" type="xs:boolean" use="optional" default="false">
+								<xs:annotation>
+									<xs:documentation>Es liegen Ist-Daten für Startpunkt vor</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TravelTime" type="xs:nonNegativeInteger">
+				<xs:annotation>
+					<xs:documentation>Reisezeit in Sekunden</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Distance" type="xs:decimal" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Länge des Segmentes in km</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VehicleJourney" type="VehicleJourneyType">
+				<xs:annotation>
+					<xs:documentation>ÖV-Fahrt mit Richtungsangaben etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vias" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zwischenhaltestellen</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Via" type="StopPublicTransportType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AST" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>AST-Fahrt</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Shape" type="GeoLineType" minOccurs="0"/>
+			<xs:element name="DisabledAccessOrigin" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zugang für Mobilitätseingeschränkte an Abfahrt</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="User" type="DisabledAccessPublicTransportType" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DisabledAccessDestination" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zugang für Mobilitätseingeschränkte an Ankunft</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="User" type="DisabledAccessPublicTransportType" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+			<xs:element name="MonitorSegment" type="MonitorSegmentType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SegmentsType">
+		<xs:annotation>
+			<xs:documentation>Routensegmente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name="SegmentPublicTransport" type="SegmentPublicTransportType"/>
+				<xs:element name="SegmentCar" type="SegmentCarType"/>
+				<xs:element name="SegmentBicycle" type="SegmentBicycleType"/>
+				<xs:element name="SegmentWalk" type="SegmentWalkType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SegmentWalkType">
+		<xs:annotation>
+			<xs:documentation>Fußweg-Routensegment</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Origin" type="OriginType"/>
+			<xs:element name="Destination" type="DestinationType"/>
+			<xs:element name="TravelTime" type="xs:nonNegativeInteger">
+				<xs:annotation>
+					<xs:documentation>Reisezeit in Sekunden</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Distance" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Länge des Segmentes in km</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Directions" type="DirectionsType" minOccurs="0"/>
+			<xs:element name="Shape" type="GeoLineType" minOccurs="0"/>
+			<xs:element name="InfoMessages" minOccurs="0">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="InfoMessagesType">
+							<xs:sequence>
+								<xs:element name="Code">
+									<xs:simpleType>
+										<xs:restriction base="xs:integer">
+											<xs:enumeration value="10001">
+												<xs:annotation>
+													<xs:documentation>ÖV: Haltestelle ersetzt</xs:documentation>
+												</xs:annotation>
+											</xs:enumeration>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StopPublicTransportType">
+		<xs:annotation>
+			<xs:documentation>Halt ÖV-Fahrt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ArrivalTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ankunftszeit</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute name="BoardingActivity" type="xs:boolean" use="optional" default="true">
+								<xs:annotation>
+									<xs:documentation>Ausstieg möglich?</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DepartureTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Abfahrtszeit</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute name="BoardingActivity" type="xs:boolean" use="optional" default="true">
+								<xs:annotation>
+									<xs:documentation>Einstieg möglich?</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrivalTimeScheduled" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ankunftszeit laut Fahrplan, falls aktuelle Daten in die Berechnung eingegangen sind.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DepartureTimeScheduled" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Abfahrtszeit laut Fahrplan, falls aktuelle Daten in die Berechnung eingegangen sind.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+		<xs:attribute name="Type" use="required" fixed="Stop"/>
+		<xs:attribute name="ActualData" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>Es liegen Ist-Daten für diesen Halt vor</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="StopType">
+		<xs:annotation>
+			<xs:documentation>Ein Halt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ASSID" type="ASSIDType"/>
+			<xs:element name="NumberID" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="NumberRange" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="VRSNr"/>
+										<xs:enumeration value="GlobalID"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Abbr"/>
+										<xs:enumeration value="Synonym"/>
+										<xs:enumeration value="Temporary"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Coordinate" type="GeoPointType" minOccurs="0"/>
+			<xs:element name="Class" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Stop"/>
+						<xs:enumeration value="Block"/>
+						<xs:enumeration value="Post"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="StreetType">
+		<xs:annotation>
+			<xs:documentation>Eine Straße</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="NonEmptyStringType">
+							<xs:attribute name="Type" use="optional">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Synonym"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="BoundingRectangle" type="GeoRectangleType" minOccurs="0"/>
+			<xs:element name="Group" type="GroupReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="IDType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageErrorType">
+		<xs:annotation>
+			<xs:documentation>Generelle Fehlernachrichten</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="SystemMessageType">
+				<xs:sequence>
+					<xs:element name="Code">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer">
+								<xs:enumeration value="100">
+									<xs:annotation>
+										<xs:documentation>Ungültige Anfrage.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="101">
+									<xs:annotation>
+										<xs:documentation>Unbestimmter Fehler.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageResponseJourneyType">
+		<xs:annotation>
+			<xs:documentation>Antwortstatus Reisewunsch</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="SystemMessageType">
+				<xs:sequence>
+					<xs:element name="Code">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer">
+								<xs:enumeration value="0">
+									<xs:annotation>
+										<xs:documentation>OK</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="1">
+									<xs:annotation>
+										<xs:documentation>Keine Route gefunden.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="100">
+									<xs:annotation>
+										<xs:documentation>Start- und/oder Zielangabe fehlt.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="101">
+									<xs:annotation>
+										<xs:documentation>Kein passendes Objekt für Start, Ziel- und/oder Zwischenpunkt gefunden.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="102">
+									<xs:annotation>
+										<xs:documentation>Unbekanntes Koordinatensystem oder ungültige Koordinate.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="103">
+									<xs:annotation>
+										<xs:documentation>Verkehrsmittel wird von diesem System nicht beauskunftet.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="104">
+									<xs:annotation>
+										<xs:documentation>Start, Ziel oder Viapunkt passen im Bezug auf die Reisekette nicht zusammen.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="200">
+									<xs:annotation>
+										<xs:documentation>Anfragezeit außerhalb der Fahrplangültigkeit.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageResponseObjectInfoType">
+		<xs:annotation>
+			<xs:documentation>Antwortstatus Informationen zu Objekten.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Code" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:enumeration value="0">
+							<xs:annotation>
+								<xs:documentation>OK</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="1">
+							<xs:annotation>
+								<xs:documentation>Kein passendes Objekt gefunden.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="2">
+							<xs:annotation>
+								<xs:documentation>Maximale Anzahl Objekte überschritten.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="100">
+							<xs:annotation>
+								<xs:documentation>Ungültige Anfrage.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="101">
+							<xs:annotation>
+								<xs:documentation>Unbekanntes Koordinatensystem oder ungültige Koordinate.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="102">
+							<xs:annotation>
+								<xs:documentation>Suchmethode für eine oder mehrere spezifizierte Suchklassen nicht verfügbar.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="200">
+							<xs:annotation>
+								<xs:documentation>Version nicht mehr verfügbar.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Text" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageResponseStopTimetableType">
+		<xs:annotation>
+			<xs:documentation>Antwortstatus Haltestellenfahrplan.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="SystemMessageType">
+				<xs:sequence>
+					<xs:element name="Code">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer">
+								<xs:enumeration value="0">
+									<xs:annotation>
+										<xs:documentation>OK</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageResponseShortHaulType">
+		<xs:annotation>
+			<xs:documentation>Antwortstatus Kurzstrecken.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="SystemMessageType">
+				<xs:sequence>
+					<xs:element name="Code">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer">
+								<xs:enumeration value="0">
+									<xs:annotation>
+										<xs:documentation>OK</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageStatusType">
+		<xs:annotation>
+			<xs:documentation>Nachricht Systemstatus</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="SystemMessageType">
+				<xs:sequence>
+					<xs:element name="Code">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer">
+								<xs:enumeration value="0">
+									<xs:annotation>
+										<xs:documentation>OK</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="1">
+									<xs:annotation>
+										<xs:documentation>Unspecified Error</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SystemMessageType">
+		<xs:annotation>
+			<xs:documentation>Systemnachricht. Text gibt ggf. Debughinweise. Fehlercodes sind in den entsprechenden Typableitungen definiert.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Code" type="xs:integer"/>
+			<xs:element name="Text" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SystemStatusType">
+		<xs:annotation>
+			<xs:documentation>Systemstatus</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Status" type="SystemMessageStatusType"/>
+			<xs:element name="Timestamp" type="xs:dateTime"/>
+			<xs:element name="Host" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hostname</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TariffType">
+		<xs:annotation>
+			<xs:documentation>ÖV-Tarif</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="NonEmptyStringType"/>
+			<xs:element name="StandardPrice" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Preis für Einzelticket Erwachsener 2.Klasse in Cent</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StandardLevel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Preisstufe</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TariffZones" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Tariffzonen</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TariffZone" type="xs:positiveInteger" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="Start"/>
+					<xs:attribute name="End"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Properties" type="xs:anyType" minOccurs="0"/>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VehicleJourneyType">
+		<xs:annotation>
+			<xs:documentation>Eine Fahrt</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="NonEmptyStringType">
+				<xs:annotation>
+					<xs:documentation>ID / Kursnummer der Fahrt</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--xs:element name="Line">
+				<xs:annotation>
+					<xs:documentation>Linie</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="ID" type="IDType" use="required"/>
+					<xs:attribute name="Type">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Line"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element-->
+			<xs:element name="Line">
+				<xs:complexType mixed="true">
+					<xs:attribute name="Type">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Line"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="ID" type="IDType" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Direction" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Richtungsangabe</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DirectionNo" type="xs:string" minOccurs="0"/>
+			<xs:element name="Vehicle">
+				<xs:annotation>
+					<xs:documentation>Fahrzeuginformationen</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Name" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>Bezeichnung des Fahrzeugs</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Product" type="PublicTransportProductType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Verkehrsmittel (optional, falls Abweichung von Standard-Verkehrsmittel für diese Linie)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Stops" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Haltestellen der Fahrt</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Stop" type="StopPublicTransportType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InfoMessages" type="InfoMessagesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- xs:complexType name="SearchClassParkAndRideType">
+    <xs:annotation>
+      <xs:documentation>Suchklasse P+R-Platz</xs:documentation>
+    </xs:annotation>
+  </xs:complexType -->
+	<!-- xs:complexType name="ParkAndRideType">
+    <xs:annotation>
+      <xs:documentation>Ein P+R-Platz</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="POIType"/>
+    </xs:complexContent>
+  </xs:complexType -->
+</xs:schema>
