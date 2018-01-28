@@ -264,7 +264,7 @@ function processLogin(userData){
 
 startHouseholdManager();////-------------------------------------------TEST---------Start-------------------------------------------------////
 
-function searchConflictTime(allUsers, deadlines){
+function searchConflictTime(allUsers, deadlines, detectedUserInfo){
   var activities = {};
   var activityDuration ={}
   var wholeDuration = {};
@@ -284,7 +284,7 @@ function searchConflictTime(allUsers, deadlines){
     }
     wholeDuration[i] = sum * 1000; //maybe in minutes!!
   }
-  for (var x = 0; x < allUsers.length; x++) {                                    //check conflict schedules with deadlines and wholeDuration
+  for (var x = 0; x < allUsers.length; x++) {                                   //check conflict schedules with deadlines and wholeDuration
     for (var i = x+1; i < allUsers.length; i++) {
       var firstDate = new Date(allDates[x])
       var secDate = new Date(allDates[i])
@@ -293,38 +293,50 @@ function searchConflictTime(allUsers, deadlines){
         break;
       }
       else {
-        conflictPlans[mustManaged] = activities[x];
+        conflictPlans[mustManaged] = allUsers[x];
         mustManaged += 1;
-        conflictPlans[mustManaged] = activities[i];
+        conflictPlans[mustManaged] = allUsers[i];
+        break;
+        }
+      }
+    }
+    for (var i = 0; i < allUsers.length; i++) {
+      if (detectedUserInfo[0] == conflictPlans[i]){                             //check the user
+        startActivitiesManager(conflictPlans, mustManaged);                     //if there is a conflict, start function to resolve conflict
+        break;
+      }
+      else {
+        console.log(inspect("No conflicts!", { colors: true, depth: Infinity }));
         break;
       }
     }
-  }
-  if (mustManaged != 0){
-    startActivitiesManager(conflictPlans);                                      //if there is a conflict, start function to resolve conflict
-  }
-  else {
-  //  console.log(inspect("No conflicts!", { colors: true, depth: Infinity }));
-  }
 }//end of searchConflictTime()
 
-function startActivitiesManager(conflictPlans) {
-
-}
+function startActivitiesManager(conflictPlans, mustManaged) {
+  var ressourceBath = false;                                                    ////////////////////////////////////
+  var ressourceFöhn = false;                                                    //       Mögliches Vorgehen       //
+  var ressourceKitchen = false;                                                 //->Nach der Priorität (5,4,3.. ) //
+  var priorityCheck = {};                                                       //->Aktivitäten rausziehen        //
+  var priorityCounter = 5;                                                      //->Dauer der Aktivität zu der An-//
+                                                                                // fangszeit addieren und Über-   //
+  for (var i = 0; i < mustManaged+1; i++) {                                     // schneidungen prüfen(Ressource  //
+    priorityCheck[i] = getObjects(conflictPlans[i],"priority","5");             // schonbesetzt?)                 //
+  }                                                                             //->Neuvergabe von Reihenfolge    //
+  console.log(inspect(priorityCheck,{ colors: true, depth: Infinity }));        ////////////////////////////////////
+}//end of function startActivitiesManager()
 
 function startHouseholdManager(){
-  //dummy JSON with information about the users
-  var loadedData = fs.readFileSync("./Household.json");
+  var loadedData = fs.readFileSync("./Household.json");                         //dummy JSON with information about the users
   var loadedJson = JSON.parse(loadedData);
   //var loadedJsonLength = loadedJson.users;
+  var dummyDiv_id = "android-20013fea6bdcc120c";
 
-  var detectedUserInfo = getObjects(loadedJson,"div_id","android-20013fea6bdcc120c");
+  var detectedUserInfo = getObjects(loadedJson,"div_id" , dummyDiv_id); //<-----------change parameter !!!
   var householdID =  getObjects(detectedUserInfo,"house_id","").toString();
   var allUsers =  getObjects(loadedJson,"house_id",householdID);
 
   var deadlines =  getObjects(allUsers,"deadline","");
-  searchConflictTime(allUsers, deadlines);
-
+  searchConflictTime(allUsers, deadlines, detectedUserInfo);
 
 }//end of function startHouseholdManager()
 
