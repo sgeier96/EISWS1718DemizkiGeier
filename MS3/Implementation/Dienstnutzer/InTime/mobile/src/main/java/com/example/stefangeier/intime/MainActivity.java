@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity{
 
     public boolean attemptLogin(String android_id){
 
-        String localhost = "http://10.0.2.2:6458/";
-        String herokuUrl = "https://eisws1718demizkigeier.herokuapp.com";
+        final String localhost = "http://10.0.2.2:6458/";
+        final String herokuUrl = "https://eisws1718demizkigeier.herokuapp.com";
 
         HashMap<String, String> httpHeader = new HashMap<>();
         httpHeader.put("User-Agent", "Mozilla/5.0");
@@ -374,6 +374,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public String writeJSON(View v){
+
 
         Resource resource1 = new Resource("bathroom", 1);
         Resource resource2 = new Resource("second bathroom", 1);

@@ -13,6 +13,7 @@ public class GsonWrapper {
     Household household;
     Resource resource;
     String android_id;
+    Object o;
 
     public GsonWrapper(User user, String parameter){ //e.g. for Registration
         this.parameter = parameter;
@@ -44,6 +45,10 @@ public class GsonWrapper {
         this.household = household;
         this.resource = resource;
         this.user = user;
+        this.parameter = parameter;
+    }
+    public GsonWrapper(Object o, String parameter){
+        this.o = o;
         this.parameter = parameter;
     }
 }

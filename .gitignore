@@ -28,7 +28,7 @@ MS3/Implementation/Dienstnutzer/InTime/.DS_Store
 
 # Android Studio
 MS3/Implementation/Dienstnutzer/InTime/*.iml
-MS3/Implementation/Dienstnutzer/InTime/.idea
+MS3/Implementation/Dienstnutzer/InTime/**/*.idea
 #.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
 MS3/Implementation/Dienstnutzer/InTime/.gradle
 MS3/Implementation/Dienstnutzer/InTime/build/

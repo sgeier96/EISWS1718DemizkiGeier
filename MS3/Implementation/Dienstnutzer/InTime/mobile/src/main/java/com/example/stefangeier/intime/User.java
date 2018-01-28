@@ -9,6 +9,8 @@ class User {
     private String username;
     private Schedule currentSchedule;
     private String android_id;
+    /* ------ Dummy value ----- */
+    private String house_id;
 
     User(String username, String android_id){
         this.username = username;
@@ -27,4 +29,6 @@ class User {
     public void setUsername(String passedUsername){
         this.username = passedUsername;
     }
+    public String getHouse_id() { return house_id; }
+    public void setHouse_id(String house_id) {this.house_id = house_id;}
 }

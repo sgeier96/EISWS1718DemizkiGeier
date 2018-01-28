@@ -2,6 +2,7 @@ package com.example.stefangeier.intime;
 
 import android.content.Intent;
 import android.location.Location;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.sql.Struct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -36,12 +38,16 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class newSchedule_activities extends AppCompatActivity{
+    final String localhost = "http://10.0.2.2:6458/";
+    final String herokuUrl = "https://eisws1718demizkigeier.herokuapp.com";
 
     String scheduleName;
     Location initialLocation;
     Location finalTargetLocation;
     int hourDeadline;
     int minuteDeadline;
+    String sHourDeadline;
+    String sMinuteDeadline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,10 @@ public class newSchedule_activities extends AppCompatActivity{
             finalTargetLocation = (Location) extras.get("finalTargetLocation");
             hourDeadline = extras.getInt("hourDeadline");
             minuteDeadline = extras.getInt("minuteDeadline");
+            if (hourDeadline < 10) { sHourDeadline = "0" + String.valueOf(hourDeadline);}
+            else {sHourDeadline = String.valueOf(hourDeadline);}
+            if (minuteDeadline < 10) { sMinuteDeadline = "0" + String.valueOf(minuteDeadline);}
+            else {sMinuteDeadline = String.valueOf(minuteDeadline);}
         }
     }
 
@@ -128,6 +138,47 @@ public class newSchedule_activities extends AppCompatActivity{
         /*--------------- looking for a matching route between those two  locations --------------*/
         //TODO looking for a matching route between those two locations
 
+
+        /*---------------------- sending userSchedule to 'dienstgeber' ---------------------------*/
+        httpHeader.clear();
+        httpHeader.put("Content-Type", "application/json");
+        SendPostTask sendUserScheduleTask = new SendPostTask(localhost, "POST", httpHeader);
+
+        String android_id = Settings.Secure.getString(v.getContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        Resource resource1 = new Resource("bathroom", 1);
+        Resource resource2 = new Resource("second bathroom", 1);
+        Resource resource3 = new Resource("kitchen table", 3);
+        Household household = new Household("oofhouse");
+        household.addResource(resource1);
+        household.addResource(resource2);
+        household.addResource(resource3);
+        User user1 = new User("fooman", android_id);
+        household.addResident(user1);
+        user1.setHouse_id("0");
+
+        Activity activity1 = new Activity("Essen", 600, 4);
+        Activity activity2 = new Activity("Duschen", 500, 4);
+        Activity activity3 = new Activity("Aufräumen", 700, 2);
+        Schedule schedule1 = new Schedule();
+        schedule1.add(activity1);
+        schedule1.add(activity2);
+        schedule1.add(activity3);
+        user1.setSchedule(schedule1);
+        Gson gson = new Gson();
+        GsonWrapper gsonWrapper = new GsonWrapper(user1, "userSchedule");
+
+        sendUserScheduleTask.execute(gson.toJson(gsonWrapper));
+
+        /* --------------------- sending userTravelInfo to 'dienstgeber' ------------------------ */
+
+        httpHeader.clear();
+        httpHeader.put("Content-Type", "application/json");
+        SendPostTask sendUserTravelInfo = new SendPostTask(localhost, "POST", httpHeader);
+        GsonWrapper gsonWrapper1 = new GsonWrapper(new UserTravelInfo("15", "15"), "userTravelInfo");
+        sendUserTravelInfo.execute(gson.toJson(gsonWrapper1));
+
+        /* ------------------------------ done. next Screen. -------------------------------------*/
         Toast.makeText(getApplicationContext(), "Schedule successfully created!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getApplicationContext(), mySchedules.class);
         startActivity(intent);

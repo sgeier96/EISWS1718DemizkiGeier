@@ -37,18 +37,61 @@ app.post('/', function(request, response){
   console.log("[POST-Acceptor] Received data: " + JSON.stringify(request.body));
   var data = request.body;
   processRequestParameter(data);
-  vrsCommunication();
+  //vrsCommunication();
 
   response.send(result);
 });
 
-journey();
+//--------------------------Search object key or values-----------------------//
+//http://techslides.com/how-to-parse-and-search-json-in-javascript
+//return an array of objects according to key, value, or key and value matching
+function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));
+        } else
+        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
+        if (i == key && val == '' && key == "house_id"){
+          var houseID = obj[i];
+          return houseID;
+          break;
+        }
+        if (i == key && val == '' && key == "deadline"){
+          var deadlines = obj[i];
+          return deadlines;
+          break;
+        }
+        if (i == key && val == '' && key == "activities"){
+          var activities = obj[i];
+          return activities;
+          break;
+        }
+        if (i == key && val == '' && key == "activityDuration"){
+          var wholeDuration = obj[i];
+          return wholeDuration;
+          break;
+        }
+        if (i == key && obj[i] == val || i == key && val == '') { //
+            objects.push(obj);
+        } else if (obj[i] == val && key == ''){
+            //only add if the object is not already in the array
+            if (objects.lastIndexOf(obj) == -1){
+                objects.push(obj);
+            }
+        }
+    }
+    return objects;
+}//end of getObjects()
+
 //---------------------------Abfahrt und Ankunft Anfrage----------------------//
-function journey(){
-  var rJson = fs.readFileSync('./clientJson.json'); //dummy Json(Information from client)
+function journey(passedData){
+  //var rJson = fs.readFileSync('./clientJson.json'); //dummy Json(Information from client)
+  var rJson = JSON.stringify(passedData);
   try {
     var oJson = JSON.parse(rJson);
-    var arrivalTime = oJson.Ankunftszeit;
+    var arrivalTime = oJson.Ankunftszeit.toString();
     var departureTime = oJson.Abfahrtszeit;
     var placeofArrival = oJson.Ankunftsort;
     var pointofDeparture = oJson.Abfahrtsort;
@@ -92,52 +135,11 @@ function journey(){
     '</Request>'
     //validate(xmlPOST);
 
-    vrsCommunication(xmlPOST);
+    vrsCommunication(xmlPOST, arrivalTime);
 }//end of journey
-//--------------------------Search object key or values-----------------------//
-//http://techslides.com/how-to-parse-and-search-json-in-javascript
-//return an array of objects according to key, value, or key and value matching
-function getObjects(obj, key, val) {
-    var objects = [];
-    for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) continue;
-        if (typeof obj[i] == 'object') {
-            objects = objects.concat(getObjects(obj[i], key, val));
-        } else
-        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
-        if (i == key && val == '' && key == "house_id"){
-          var houseID = obj[i];
-          return houseID;
-          break;
-        }
-        if (i == key && val == '' && key == "deadline"){
-          var deadlines = obj[i];
-          return deadlines;
-          break;
-        }
-        if (i == key && val == '' && key == "activities"){
-          var activities = obj[i];
-          return activities;
-          break;
-        }
-        if (i == key && val == '' && key == "activityDuration"){
-          var wholeDuration = obj[i];
-          return wholeDuration;
-          break;
-        }
-        if (i == key && obj[i] == val || i == key && val == '') { //
-            objects.push(obj);
-        } else if (obj[i] == val && key == ''){
-            //only add if the object is not already in the array
-            if (objects.lastIndexOf(obj) == -1){
-                objects.push(obj);
-            }
-        }
-    }
-    return objects;
-}//end of getObjects()
+
 //------------------------------TEST API Anbindung----------------------------//
-function vrsCommunication(xmlPOST){
+function vrsCommunication(xmlPOST, arrivalTime){
 
   xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
@@ -145,8 +147,12 @@ function vrsCommunication(xmlPOST){
           var cJson = convert.xml2json(xhr.responseText, {compact: true, spaces: 4});
           var parsedJson = JSON.parse(cJson);
 
-          var searchObj = getObjects(parsedJson,"_text","2018-01-29T15:15:00+01:00"); //search speciefied time in response
-          if (searchObj.length != 0){                                                 //test of different time
+          console.log(require('util').inspect(parsedJson, {colors: true, depth: null }));
+
+          console.log("---------------------arrivalTime---------------------");
+          console.log(arrivalTime);
+          var searchObj = getObjects(parsedJson,"_text", arrivalTime);              //search speciefied time in response
+          if (searchObj.length != 0){                                            //test of different time
             console.log("No changes in departure time");
            }
            else {
@@ -189,9 +195,13 @@ function processRequestParameter(data){
       break;
     case 'login':
       processLogin(data);
-      //startHouseholdManager();
       break;
-      //...
+    case 'userSchedule':
+      startHouseholdManager(data.user);
+      break;  //...
+    case 'userTravelInfo':
+      journey(data.o);
+      break;
     default:
       console.log("unknown parameter");
   }
@@ -262,7 +272,7 @@ function processLogin(userData){
   }
 }//end of processLogin function
 
-startHouseholdManager();////-------------------------------------------TEST---------Start-------------------------------------------------////
+//startHouseholdManager();////-------------------------------------------TEST---------Start-------------------------------------------------////
 
 function searchConflictTime(allUsers, deadlines, detectedUserInfo){
   var activities = {};
@@ -302,11 +312,14 @@ function searchConflictTime(allUsers, deadlines, detectedUserInfo){
     }
     for (var i = 0; i < allUsers.length; i++) {
       if (detectedUserInfo[0] == conflictPlans[i]){                             //check the user
-        startActivitiesManager(conflictPlans, mustManaged);                     //if there is a conflict, start function to resolve conflict
+        if(!startActivitiesManager(conflictPlans, mustManaged)){                     //if there is a conflict, start function to resolve conflict
+          result = "ATTENTION! Schedule conflict with other residents";
+        }
         break;
       }
       else {
         console.log(inspect("No conflicts!", { colors: true, depth: Infinity }));
+        result = "Schedule executable without conflicts";
         break;
       }
     }
@@ -322,18 +335,17 @@ function startActivitiesManager(conflictPlans, mustManaged) {
   for (var i = 0; i < mustManaged+1; i++) {                                     // schneidungen prüfen(Ressource  //
     priorityCheck[i] = getObjects(conflictPlans[i],"priority","5");             // schonbesetzt?)                 //
   }                                                                             //->Neuvergabe von Reihenfolge    //
-  console.log(inspect(priorityCheck,{ colors: true, depth: Infinity }));        ////////////////////////////////////
+  //console.log(inspect(priorityCheck,{ colors: true, depth: Infinity }));      ////////////////////////////////////
+  return true; //ActivityManager successfull
 }//end of function startActivitiesManager()
 
-function startHouseholdManager(){
+function startHouseholdManager(passedData){
   var loadedData = fs.readFileSync("./Household.json");                         //dummy JSON with information about the users
   var loadedJson = JSON.parse(loadedData);
-  //var loadedJsonLength = loadedJson.users;
-  var dummyDiv_id = "android-20013fea6bdcc120c";
+  var android_id = passedData.android_id.toString();
 
-  var detectedUserInfo = getObjects(loadedJson,"div_id" , dummyDiv_id); //<-----------change parameter !!!
-  var householdID =  getObjects(detectedUserInfo,"house_id","").toString();
-  var allUsers =  getObjects(loadedJson,"house_id",householdID);
+  var detectedUserInfo = getObjects(loadedJson,"div_id" , android_id); //<-----------change parameter !!!
+  var allUsers =  getObjects(loadedJson,"house_id",passedData.house_id);
 
   var deadlines =  getObjects(allUsers,"deadline","");
   searchConflictTime(allUsers, deadlines, detectedUserInfo);

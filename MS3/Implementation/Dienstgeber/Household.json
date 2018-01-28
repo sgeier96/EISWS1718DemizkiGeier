@@ -2,8 +2,8 @@
     "household": [
       {
         "users": [
-          {"div_id": "android-20013fea6bdcc120c" , "username":"Peter", "currentSchedule": "zeitplan1" , "deadline":"08:00","house_id": "0", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 5},
-                                                                                                                                            {"activityName": "Duschen","activityDuration": 600, "priority": 4},
+          {"div_id": "9bd4aa06c1474be7" , "username":"Peter", "currentSchedule": "zeitplan1" , "deadline":"08:00","house_id": "0", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 5},
+                                                                                           {"activityName": "Duschen","activityDuration": 600, "priority": 4},
                                                                                                                                             {"activityName": "föhnen","activityDuration": 600, "priority": 2}]},
 
           {"div_id": "android-34013fea7bdcc120c" , "username":"Peter", "currentSchedule": "zeitplan1" , "deadline":"15:00","house_id": "0", "activities":[{"activityName": "Essen","activityDuration": 600, "priority": 1},
